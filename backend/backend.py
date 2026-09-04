@@ -1,6 +1,8 @@
 from flask import Flask, jsonify
 import json
 import psutil
+import sqlite3
+import os
 
 app = Flask(__name__)
 
@@ -49,5 +51,20 @@ def get_health_data():
 
     return json_payload
 
+Database = "/app/data/database.db"
+
+def init_db():
+    os.makedirs("/app/data", exist_ok=True)
+    connection = sqlite3.connect(Database)
+    connection.execute(
+        """ CREATE TABLE IF NOT EXISTS settings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            key TEXT UNIQUE NOT NULL,
+            value TEXT)"""
+    )
+    connection.commit()
+    connection.close()
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    init_db()
+    app.run(host="0.0.0.0", port=5000, debug=False)

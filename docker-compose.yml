@@ -1,0 +1,23 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: raspberry-pi-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - sqlite-data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: raspberry-pi-frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    depends_on: 
+      - backend
+
+volumes:
+  sqlite-data:
