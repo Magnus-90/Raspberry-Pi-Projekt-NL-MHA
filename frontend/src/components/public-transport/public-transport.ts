@@ -20,15 +20,20 @@ export class PublicTransport implements OnInit, OnDestroy {
   }
 
   async update() {
-    const data = await this.getpublictransportdata();
-    this.publictransportdata.set(data);
+    let wait = 30_000;
+    try {
+      const data = await this.getpublictransportdata();
+      this.publictransportdata.set(data);
 
-    const now = Date.now();
-    const nextDeparture = data.stationboard
-      .map((s: any) => s.stop.departureTimestamp * 1000)
-      .find((t: number) => t > now);
+      const now = Date.now();
+      const nextDeparture = (data.stationboard ?? [])
+        .map((s: any) => s.stop.departureTimestamp * 1000)
+        .find((t: number) => t > now);
 
-    const wait = nextDeparture ? Math.min(Math.max(nextDeparture - now, 10_000), 60_000) : 30_000;
+      if (nextDeparture) wait = Math.min(Math.max(nextDeparture - now, 10_000), 60_000);
+    } catch (e) {
+      console.error('Public transport fetch failed', e);
+    }
 
     this.timer = setTimeout(() => this.update(), wait);
   }
