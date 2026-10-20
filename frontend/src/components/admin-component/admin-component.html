@@ -1,0 +1,10 @@
+<div class="admincomponent">
+    <p>Admin Panel</p>    
+    <div class="systemstats">
+        <p>CPU Auslastung: {{ systemstats()?.CPU_Percent }}</p>
+        <p>RAM Auslastung: {{ systemstats()?.RAM_Percent }}</p>
+        <p>RAM Total: {{ systemstats()?.RAM_Total_GB }}</p>
+        <p>RAM Nutzung: {{ systemstats()?.RAM_Used_GB }}</p>
+        <p>Temperatur: {{ systemstats()?.Temperature }}</p>
+    </div>
+</div>

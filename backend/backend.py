@@ -1,10 +1,12 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 import json
 import psutil
 import sqlite3
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 @app.route("/")
 def hello_world():
