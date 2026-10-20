@@ -1,6 +1,7 @@
 .timecomponent{
-    // display: grid;
-    // place-items: center;
+    display: grid;
+    grid-template-columns: 1fr 0.5fr;
+    gap: 1.5rem;
 }
 .time{
     display: grid;
@@ -9,8 +10,9 @@
     border-radius: 8px;
 
     p{
-        // font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 10vw;
+        font-size: 6vw;
+        line-height: 1;
+        margin: 0;
         color: white;
     }
 }
@@ -23,7 +25,9 @@
     border-radius: 8px;
 
     p{
-        // font-size: 10vw;
+        padding: 15px;
+        font-size: 4vw;
+        margin: 0;
         color: white;
     }
 }
