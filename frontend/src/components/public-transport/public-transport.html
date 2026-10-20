@@ -1,0 +1,19 @@
+<div class="publictransport">
+  <p class="title">Abfahrten ab: {{ publictransportdata()?.station?.name ?? location }}</p>
+  <div class="items">
+    <div class="header">
+        <p>Linie</p>
+        <p>Abfahrt</p>
+        <p>Infomationen</p>
+    </div>
+    @for (item of publictransportdata()?.stationboard ?? []; track $index) {
+      <div class="item">
+        <p class="text">{{ item.category }} {{ item.number }} nach {{ item.to }}</p>
+        <p class="text">Abfahrt: {{ item.stop.departure | date: 'HH:mm' }}</p>
+        @if (item.stop.delay > 0) {
+          <p class="delay text">Verspätung: {{ "+" + item.stop.delay + " " + 'Minuten' }}</p>
+        }
+      </div>
+    }
+  </div>
+</div>

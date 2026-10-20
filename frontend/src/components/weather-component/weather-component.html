@@ -1,0 +1,22 @@
+<div class="weathercomponent">
+  <div class="icon">
+    <img
+      [src]="getIconPath(weatherdata().current.weather_code, weatherdata().current.is_day)"
+      alt=""
+    />
+  </div>
+  <div class="data">
+    <div class="currentTemperature">
+      <img class="smallIcons" src="icons/thermometer-celsius.svg" alt="" />
+      <p class="text">Aktuelle Temperatur: {{ weatherdata().current.temperature_2m }}</p>
+    </div>
+    <div class="maxTemperature">
+      <img class="smallIcons" src="icons/thermometer-warmer.svg" alt="" />
+      <p class="text">Maximale Temperatur: {{ weatherdata().daily.temperature_2m_max }}</p>
+    </div>
+    <div class="minTemperature">
+      <img class="smallIcons" src="icons/thermometer-colder.svg" alt="" />
+      <p class="text">Minimale Temperatur: {{ weatherdata().daily.temperature_2m_min }}</p>
+    </div>
+  </div>
+</div>
