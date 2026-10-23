@@ -1,0 +1,17 @@
+[Unit]
+Description=Raspberry Pi Projekt NL MHA
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+User=@USER@
+WorkingDirectory=@PROJECT_DIR@
+ExecStartPre=-/usr/bin/git pull
+ExecStart=/usr/bin/docker compose up -d --build
+ExecStop=/usr/bin/docker compose stop
+
+[Install]
+WantedBy=multi-user.target
