@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 import json
 import psutil
@@ -9,10 +9,40 @@ app = Flask(__name__)
 CORS(app)
 
 @app.route("/")
-def hello_world():
+def start():
     x =  '{ "name":"John", "age":30, "city":"New York"}'
     y = json.loads(x)
     return y
+
+@app.route("/update", methods=["POST"])
+def updateRaspberryPi():
+    return jsonify({"status": "not implemented"}), 501
+
+@app.route("/restart", methods=["POST"])
+def restartRaspberryPi():
+    return jsonify({"status": "not implemented"}), 501
+
+@app.route("/settings", methods=["POST"])
+def updateSettingsRaspberryPi():
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "Kein gültiges JSON"}), 400
+
+    allowed_keys = ("weatherlocation", "publictransportlocation")
+    connection = sqlite3.connect(Database)
+    try:
+        for key in allowed_keys:
+            if key in data:
+                connection.execute(
+                    """INSERT INTO settings (key, value) VALUES (?, ?)
+                       ON CONFLICT(key) DO UPDATE SET value = excluded.value""",
+                    (key, data[key]),
+                )
+        connection.commit()
+    finally:
+        connection.close()
+
+    return jsonify({"status": "ok"})
 
 @app.route("/health")
 def get_health_data():

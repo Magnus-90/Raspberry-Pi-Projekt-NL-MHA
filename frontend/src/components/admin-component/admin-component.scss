@@ -1,3 +1,50 @@
 .admincomponent{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+.title{
+    font-size: 25px;
+}
+
+.konfigurations, .systemstats{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 15px;
     border: 1px solid black;
+    border-radius: 8px;
+}
+
+.systemstats{
+    place-items: center;
+
+    p{
+        margin: 0;
+    }
+}
+
+.konfigurations{
+    place-items: center;
+
+    button{
+        background-color: gray;
+        padding: 10px;
+        border: 0px;
+        border-radius: 8px;
+        color: white;
+
+        &:hover{
+            cursor: pointer;
+            background-color: rgb(97, 97, 97);
+        }
+    }
+}
+
+.weatherkonfigurations, .publictransportkonfigurations{
+    display: grid;
+    gap: 4px;
+    width: 100%;
 }

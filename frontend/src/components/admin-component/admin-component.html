@@ -1,10 +1,34 @@
+<div class="title">
+    <strong>Admin Panel</strong>
+</div>
 <div class="admincomponent">
-    <p>Admin Panel</p>    
     <div class="systemstats">
-        <p>CPU Auslastung: {{ systemstats()?.CPU_Percent }}</p>
-        <p>RAM Auslastung: {{ systemstats()?.RAM_Percent }}</p>
-        <p>RAM Total: {{ systemstats()?.RAM_Total_GB }}</p>
-        <p>RAM Nutzung: {{ systemstats()?.RAM_Used_GB }}</p>
-        <p>Temperatur: {{ systemstats()?.Temperature }}</p>
+        <strong>System Informationen</strong>
+        @if (systemstats(); as stats) {
+            <p>CPU Auslastung: {{ stats.CPU_Percent }}%</p>
+            <p>RAM Auslastung: {{ stats.RAM_Percent }}%</p>
+            <p>RAM Total: {{ stats.RAM_Total_GB }}GB</p>
+            <p>RAM Nutzung: {{ stats.RAM_Used_GB }}GB</p>
+            <p>Temperatur: {{ stats.Temperature }}</p>
+        } @else {
+            <p>Aktuell sind keine Daten verfügbar</p>
+        }
+    </div>
+    <div class="konfigurations">
+        <strong>Einstellungen</strong>
+        <div class="weatherkonfigurations">
+            <label for="weatherlocation">Wetter Standort:</label>
+            <input id="weatherlocation" type="text" [value]="weatherlocation()" (input)="weatherlocation.set($any($event.target).value)">
+        </div>
+        <div class="publictransportkonfigurations">
+            <label for="publictransportlocation">ÖPNV Standort:</label>
+            <input id="publictransportlocation" type="text" [value]="publictransportlocation()" (input)="publictransportlocation.set($any($event.target).value)">
+        </div>
+        @if (error()) {
+            <p class="error">{{ error() }}</p>
+        }
+        <button (click)="saveSettings()">Speichern</button>
+        <button (click)="updatePi()">Raspberry Pi Display Updaten</button>
+        <button (click)="restartPi()">Raspberry Pi Neustarten</button>
     </div>
 </div>
