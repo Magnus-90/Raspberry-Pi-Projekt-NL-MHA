@@ -1,3 +1,8 @@
+// Auf der Admin-Seite soll der Mauszeiger sichtbar sein
+:host, :host *{
+    cursor: auto;
+}
+
 .admincomponent{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(600px, 1fr));

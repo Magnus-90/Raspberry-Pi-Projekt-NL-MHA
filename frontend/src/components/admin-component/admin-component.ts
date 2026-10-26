@@ -12,6 +12,7 @@ export class AdminComponent implements OnInit {
   public publictransportlocation = signal("");
   public weatherlocation = signal("");
   public error = signal("");
+  public info = signal("");
   async getsystemStats() {
     const response = await fetch(this.url);
     const data = await response.json();
@@ -41,21 +42,32 @@ export class AdminComponent implements OnInit {
     }
   }
 
+  private async sendCommand(path: string, label: string){
+    this.error.set("");
+    this.info.set("");
+    try{
+      const response = await fetch(`http://localhost:5000/${path}`, {
+        method: "POST"
+      })
+      if(!response.ok){
+        this.error.set(`${label} fehlgeschlagen: ${response.status}`);
+        return;
+      }
+      this.info.set(`${label} gestartet`);
+    } catch (error){
+      this.error.set(`${label} fehlgeschlagen: ${error}`);
+    }
+  }
+
   async updatePi(){
-    const respone = await fetch("http://localhost:5000/update", {
-      method: "POST"
-    })
-    return respone;
+    await this.sendCommand("update", "Update");
   }
 
   async restartPi(){
     if(!confirm("Sind sie sich sicher das sie den Raspberry Pi neu Starten möchten?")){
       return;
     }
-    const respone = await fetch("http://localhost:5000/restart",{
-      method: "POST"
-    })
-    return respone;
+    await this.sendCommand("restart", "Neustart");
   }
 
   async ngOnInit() {

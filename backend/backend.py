@@ -15,21 +15,25 @@ def start():
     y = json.loads(x)
     return y
 
+# Der Helfer läuft auf dem Pi (nicht im Container), erreichbar über host.docker.internal
+HELPER_URL = "http://host.docker.internal:5001"
+
+def call_helper(path, started_message):
+    try:
+        response = requests.post(f"{HELPER_URL}/{path}", timeout=60)
+    except requests.exceptions.RequestException:
+        return jsonify({"status": "Helfer nicht erreichbar"}), 502
+    if response.ok:
+        return jsonify({"status": started_message}), 202
+    return jsonify({"status": "Helfer meldet einen Fehler", "details": response.text}), 502
+
 @app.route("/update", methods=["POST"])
 def updateRaspberryPi():
-    resposne = requests.post("http://localhost:5001/update")
-    if resposne.ok:
-            return jsonify({"status": "update erfolgreich"}), 200
-    else:
-        return jsonify({"status": "fehler beim updaten"}), 400
+    return call_helper("update", "update gestartet")
 
 @app.route("/restart", methods=["POST"])
 def restartRaspberryPi():
-    resposne = requests.post("http://localhost:5001/restart")
-    if resposne.ok:
-        return jsonify({"status": "restart erfolgreich"}), 200
-    else:
-        return jsonify({"status": "fehler beim neustarten"}), 400
+    return call_helper("restart", "neustart gestartet")
 
 @app.route("/settings", methods=["POST"])
 def updateSettingsRaspberryPi():

@@ -27,6 +27,9 @@
         @if (error()) {
             <p class="error">{{ error() }}</p>
         }
+        @if (info()) {
+            <p class="info">{{ info() }}</p>
+        }
         <button (click)="saveSettings()">Speichern</button>
         <button (click)="updatePi()">Raspberry Pi Display Updaten</button>
         <button (click)="restartPi()">Raspberry Pi Neustarten</button>

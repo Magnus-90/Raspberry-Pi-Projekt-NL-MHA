@@ -10,23 +10,28 @@
 
 set -euo pipefail
 
+# Gelbe Meldung mit einer Leerzeile davor und danach
+log() {
+    printf '\n\033[33m%s\033[0m\n\n' "$1"
+}
+
 TARGET_USER="${SUDO_USER:-$USER}"
 TARGET_UID="$(id -u "$TARGET_USER")"
 REPO_URL="https://github.com/Magnus-90/Raspberry-Pi-Projekt-NL-MHA.git"
 PROJECT_DIR="/home/$TARGET_USER/Raspberry-Pi-Projekt-NL-MHA"
 
 # --- 1. System aktualisieren ---
-echo "System aktualisieren"
+log "System aktualisieren"
 
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install -y git curl
 
 # --- 2. Docker installieren ---
-echo "Docker Installieren"
+log "Docker installieren"
 
 if command -v docker > /dev/null; then
-    echo "Docker ist bereits installiert, überspringe die Installation."
+    log "Docker ist bereits installiert, überspringe die Installation."
 else
     # Das Convenience-Skript installiert auch das Compose-Plugin
     curl -fsSL https://get.docker.com -o /tmp/get-docker.sh
@@ -39,17 +44,17 @@ sudo systemctl enable --now docker
 sudo docker compose version
 
 # --- 3. Repo klonen ---
-echo "Repo klonen"
+log "Repo klonen"
 
 if [ -d "$PROJECT_DIR/.git" ]; then
-    echo "Repo existiert bereits, hole Änderungen."
+    log "Repo existiert bereits, hole Änderungen."
     sudo -u "$TARGET_USER" git -C "$PROJECT_DIR" pull
 else
     sudo -u "$TARGET_USER" git clone "$REPO_URL" "$PROJECT_DIR"
 fi
 
 # --- 4. Container starten (als systemd-Dienst, startet auch bei jedem Boot) ---
-echo "Container starten"
+log "Container starten"
 
 SERVICE_NAME_CONTAINER="raspberry-pi-projekt.service"
 
@@ -68,7 +73,7 @@ sudo systemctl enable --now "$SERVICE_NAME_CONTAINER"
 # - systemd-Dienst für den Kiosk anlegen (Chromium im Vollbild mit der Frontend-URL)
 # - Dienst so konfigurieren, dass er erst nach Docker und erreichbarem Frontend startet
 # - Dienst beim Booten aktivieren
-echo "Kiosk-Browser einrichten"
+log "Kiosk-Browser einrichten"
 
 SERVICE_NAME_KIOSK="kiosk.service"
 
@@ -93,7 +98,7 @@ sudo systemctl enable "$SERVICE_NAME_KIOSK"
 # --- 6. Helfer-Dienst für Update und Neustart ---
 # - Flask für das System-Python installieren (der Helfer läuft auf dem Host, nicht im Container)
 # - systemd-Dienst anlegen, aktivieren und starten
-echo "Helfer-Dienst für Update und Neustart"
+log "Helfer-Dienst für Update und Neustart"
 SERVICE_NAME_HELPER="admin.service"
 
 sudo apt-get install -y python3-flask

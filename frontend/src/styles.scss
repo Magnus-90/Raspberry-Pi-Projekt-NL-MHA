@@ -3,3 +3,8 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
 }
+
+// Mauszeiger auf allen Seiten ausblenden, die Admin-Seite stellt ihn wieder her
+* {
+  cursor: none;
+}
