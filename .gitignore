@@ -2,3 +2,4 @@
 .vscode
 backend/db/*
 !backend/db/.gitkeep
+/backend/__pycache__

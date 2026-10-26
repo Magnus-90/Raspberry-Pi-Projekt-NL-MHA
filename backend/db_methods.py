@@ -2,7 +2,7 @@ import os
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-KEY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "db", "serviceAccountKey.json")
+KEY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "db", "raspi-projekt-mha-nl-firebase-adminsdk-fbsvc-8c6d294ced.json")
 
 EXAMPLE_COLLECTION = "example"
 
