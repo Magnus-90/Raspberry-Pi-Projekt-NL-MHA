@@ -34,48 +34,37 @@ def updateRaspberryPi():
 def restartRaspberryPi():
     return call_helper("restart", "neustart gestartet")
 
+SETTINGS_MAX_LENGTH = 100
+
+@app.route("/settings", methods=["GET"])
+def getSettingsRaspberryPi():
+    try:
+        return jsonify(db_methods.get_settings())
+    except Exception as e:
+        return jsonify({"error": "Firestore-Fehler", "details": str(e)}), 500
+
 @app.route("/settings", methods=["POST"])
 def updateSettingsRaspberryPi():
     data = request.get_json(silent=True)
-    if not data:
+    if not isinstance(data, dict) or not data:
         return jsonify({"error": "Kein gültiges JSON"}), 400
 
-    allowed_keys = ("weatherlocation", "publictransportlocation")
-    settings = {key: data[key] for key in allowed_keys if key in data}
+    unknown_keys = set(data) - set(db_methods.SETTINGS_KEYS)
+    if unknown_keys:
+        return jsonify({"error": "Unbekannte Parameter", "details": sorted(unknown_keys)}), 400
+
+    settings = {}
+    for key, value in data.items():
+        if not isinstance(value, str) or len(value.strip()) > SETTINGS_MAX_LENGTH:
+            return jsonify({"error": f"Ungültiger Wert für {key}"}), 400
+        settings[key] = value.strip()
+
     try:
         db_methods.update_settings(settings)
     except Exception as e:
         return jsonify({"error": "Firestore-Fehler", "details": str(e)}), 500
 
     return jsonify({"status": "ok"})
-
-@app.route("/create_example", methods=["POST"])
-def create_example():
-    data = request.get_json(silent=True)
-    if not data:
-        return jsonify({"error": "Kein gültiges JSON"}), 400
-    try:
-        doc_id = db_methods.create_example(data)
-    except Exception as e:
-        return jsonify({"error": "Firestore-Fehler", "details": str(e)}), 500
-    return jsonify({"status": "ok", "id": doc_id}), 201
-
-@app.route("/get_example", methods=["GET"])
-def get_all_examples():
-    try:
-        return jsonify(db_methods.get_all_examples())
-    except Exception as e:
-        return jsonify({"error": "Firestore-Fehler", "details": str(e)}), 500
-
-@app.route("/get_example/<doc_id>", methods=["GET"])
-def get_example(doc_id):
-    try:
-        doc = db_methods.get_example(doc_id)
-    except Exception as e:
-        return jsonify({"error": "Firestore-Fehler", "details": str(e)}), 500
-    if doc is None:
-        return jsonify({"error": "Nicht gefunden"}), 404
-    return jsonify(doc)
 
 @app.route("/health")
 def get_health_data():
