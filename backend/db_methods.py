@@ -5,6 +5,8 @@ from firebase_admin import credentials, firestore
 KEY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "db", "raspi-projekt-mha-nl-firebase-adminsdk-fbsvc-8c6d294ced.json")
 
 EXAMPLE_COLLECTION = "example"
+SETTINGS_COLLECTION = "settings"
+SETTINGS_DOC = "general"
 
 _db = None
 
@@ -31,3 +33,6 @@ def get_example(doc_id):
 def get_all_examples():
     docs = get_db().collection(EXAMPLE_COLLECTION).stream()
     return [{"id": doc.id, **doc.to_dict()} for doc in docs]
+
+def update_settings(settings):
+    get_db().collection(SETTINGS_COLLECTION).document(SETTINGS_DOC).set(settings, merge=True)

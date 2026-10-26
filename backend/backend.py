@@ -2,8 +2,6 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import json
 import psutil
-import sqlite3
-import os
 import requests
 import db_methods
 
@@ -43,18 +41,11 @@ def updateSettingsRaspberryPi():
         return jsonify({"error": "Kein gültiges JSON"}), 400
 
     allowed_keys = ("weatherlocation", "publictransportlocation")
-    connection = sqlite3.connect(Database)
+    settings = {key: data[key] for key in allowed_keys if key in data}
     try:
-        for key in allowed_keys:
-            if key in data:
-                connection.execute(
-                    """INSERT INTO settings (key, value) VALUES (?, ?)
-                       ON CONFLICT(key) DO UPDATE SET value = excluded.value""",
-                    (key, data[key]),
-                )
-        connection.commit()
-    finally:
-        connection.close()
+        db_methods.update_settings(settings)
+    except Exception as e:
+        return jsonify({"error": "Firestore-Fehler", "details": str(e)}), 500
 
     return jsonify({"status": "ok"})
 
@@ -125,20 +116,5 @@ def get_health_data():
 
     return json_payload
 
-Database = "/app/data/database.db"
-
-def init_db():
-    os.makedirs("/app/data", exist_ok=True)
-    connection = sqlite3.connect(Database)
-    connection.execute(
-        """ CREATE TABLE IF NOT EXISTS settings (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            key TEXT UNIQUE NOT NULL,
-            value TEXT)"""
-    )
-    connection.commit()
-    connection.close()
-
 if __name__ == "__main__":
-    init_db()
     app.run(host="0.0.0.0", port=5000, debug=False)
