@@ -38,14 +38,43 @@ const WMO_ICONS: Record<number, [string, string]> = {
   styleUrl: './weather-component.scss',
 })
 export class WeatherComponent implements OnInit {
+  public url = `http://${window.location.hostname}:5000`;
   weatherdata = signal<any>(null);
-  async getCurrentWeahterData() {
+  async getCurrentWeahterData(latitude : any, longitude : any) {
     const response = await fetch(
-      'https://api.open-meteo.com/v1/forecast?latitude=47.3908&longitude=9.3864&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration&models=meteoswiss_icon_seamless&current=temperature_2m,weather_code,is_day&timezone=Europe%2FBerlin&forecast_days=1',
+      `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration&models=meteoswiss_icon_seamless&current=temperature_2m,weather_code,is_day&timezone=Europe%2FBerlin&forecast_days=1`,
     );
 
     const data = await response.json();
     return data;
+  }
+
+  async getWeatherSettings(){
+    const response = await fetch(`${this.url}/settings`, {
+      method: "GET"
+    })
+    if(!response.ok){
+      console.log("Fehler beim Wetter Settings laden")
+      return ""
+    }
+    const data = await response.json()
+    return data?.weatherlocation ?? ""
+  }
+
+  async convertWeatherLocation(name : string){
+    const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=en&format=json`, {
+      method: "GET"
+    })
+    if(!response.ok){
+      console.log("Geocoding fehlgeschlagen")
+      return null
+    }
+    const data = await response.json()
+    const place = data?.results?.[0];
+    if (!place) {
+      return null;
+    }
+    return { latitude: place.latitude, longitude: place.longitude };
   }
 
   getIconPath(code: number, isDay: number): string {
@@ -55,8 +84,16 @@ export class WeatherComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const data = await this.getCurrentWeahterData();
-    console.log(data);
-    this.weatherdata.set(data);
+    try {
+      const name = await this.getWeatherSettings();
+      const coordinates = await this.convertWeatherLocation(name);
+      if (!coordinates) {
+        return;
+      }
+      const data = await this.getCurrentWeahterData(coordinates.latitude, coordinates.longitude);
+      this.weatherdata.set(data);
+    } catch (e) {
+      console.error('Weather fetch failed', e);
+    }
   }
 }
