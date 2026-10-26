@@ -70,7 +70,26 @@ export class AdminComponent implements OnInit {
     await this.sendCommand("restart", "Neustart");
   }
 
+  async getSettings(){
+    try{
+      const response = await fetch(`${this.url}/settings`,{
+      method: "GET"
+      })
+      if(!response.ok){
+        this.error.set(`Fehler beim Settings Laden: ${response.status}`);
+        return;
+      }
+      const data = await response.json()
+      return data;
+    } catch (error){
+      this.error.set(`Fehler beim Settings Laden: ${error}`)
+    }
+  }
+
   async ngOnInit() {
+    const settings = await this.getSettings()
+    this.publictransportlocation.set(settings.publictransportlocation ?? "")
+    this.weatherlocation.set(settings.weatherlocation ?? "")
     setInterval(async () => {
       await this.getsystemStats();
     }, 10000);
