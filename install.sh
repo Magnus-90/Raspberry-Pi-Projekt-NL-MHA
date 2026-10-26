@@ -103,14 +103,26 @@ SERVICE_NAME_HELPER="admin.service"
 
 sudo apt-get install -y python3-flask
 
-sudo git config --global --add safe.directory "$PROJECT_DIR"
+SUDOERS_FILE="/etc/sudoers.d/raspberry-pi-projekt-helper"
 
-sed -e "s|@PROJECT_DIR@|$PROJECT_DIR|g" \
+echo "$TARGET_USER ALL=(root) NOPASSWD: /usr/bin/systemctl reboot" | sudo tee "$SUDOERS_FILE.tmp" > /dev/null
+sudo chmod 0440 "$SUDOERS_FILE.tmp"
+if sudo visudo -cf "$SUDOERS_FILE.tmp" > /dev/null; then
+    sudo mv "$SUDOERS_FILE.tmp" "$SUDOERS_FILE"
+else
+    sudo rm -f "$SUDOERS_FILE.tmp"
+    echo "Die sudoers-Regel ist ungültig, Abbruch." >&2
+    exit 1
+fi
+
+sed -e "s|@USER@|$TARGET_USER|g" \
+    -e "s|@PROJECT_DIR@|$PROJECT_DIR|g" \
     "$PROJECT_DIR/systemd/$SERVICE_NAME_HELPER" \
     | sudo tee "/etc/systemd/system/$SERVICE_NAME_HELPER" > /dev/null
 
 sudo systemctl daemon-reload
-sudo systemctl enable --now "$SERVICE_NAME_HELPER"
+sudo systemctl enable "$SERVICE_NAME_HELPER"
+sudo systemctl restart "$SERVICE_NAME_HELPER"
 
 # --- 7. Abschluss ---
 # - Zusammenfassung ausgeben (was wurde installiert, welche URL, wie geht es weiter)

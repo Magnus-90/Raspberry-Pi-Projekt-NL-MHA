@@ -24,7 +24,8 @@ def updatePi():
 @app.route("/restart", methods=["POST"])
 def restartPi():
     try:
-        subprocess.Popen(["sh", "-c", "sleep 2 && systemctl reboot"])
+        subprocess.Popen(["sh", "-c", "sleep 2 && sudo -n /usr/bin/systemctl reboot"])
+
     except OSError as error:
         return jsonify({"error": str(error)}), 500
     return jsonify({"status": "restart started"}), 202
