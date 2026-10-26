@@ -4,6 +4,7 @@ After=network-online.target docker.service
 Wants=network-online.target
 
 [Service]
+User=@USER@
 WorkingDirectory=@PROJECT_DIR@
 Environment=PROJECT_DIR=@PROJECT_DIR@
 ExecStart=/usr/bin/python3 @PROJECT_DIR@/host-helper/helper.py
