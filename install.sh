@@ -16,12 +16,14 @@ REPO_URL="https://github.com/Magnus-90/Raspberry-Pi-Projekt-NL-MHA.git"
 PROJECT_DIR="/home/$TARGET_USER/Raspberry-Pi-Projekt-NL-MHA"
 
 # --- 1. System aktualisieren ---
+echo "System aktualisieren"
 
 sudo apt-get update
 sudo apt-get upgrade -y
 sudo apt-get install -y git curl
 
 # --- 2. Docker installieren ---
+echo "Docker Installieren"
 
 if command -v docker > /dev/null; then
     echo "Docker ist bereits installiert, überspringe die Installation."
@@ -37,6 +39,7 @@ sudo systemctl enable --now docker
 sudo docker compose version
 
 # --- 3. Repo klonen ---
+echo "Repo klonen"
 
 if [ -d "$PROJECT_DIR/.git" ]; then
     echo "Repo existiert bereits, hole Änderungen."
@@ -46,6 +49,7 @@ else
 fi
 
 # --- 4. Container starten (als systemd-Dienst, startet auch bei jedem Boot) ---
+echo "Container starten"
 
 SERVICE_NAME_CONTAINER="raspberry-pi-projekt.service"
 
@@ -64,6 +68,7 @@ sudo systemctl enable --now "$SERVICE_NAME_CONTAINER"
 # - systemd-Dienst für den Kiosk anlegen (Chromium im Vollbild mit der Frontend-URL)
 # - Dienst so konfigurieren, dass er erst nach Docker und erreichbarem Frontend startet
 # - Dienst beim Booten aktivieren
+echo "Kiosk-Browser einrichten"
 
 SERVICE_NAME_KIOSK="kiosk.service"
 
@@ -85,10 +90,22 @@ sudo systemctl daemon-reload
 sudo systemctl enable "$SERVICE_NAME_KIOSK"
 
 
-# --- 6. Helfer-Dienst für Update und Neustart (später) ---
-# - Skript für /update und /restart auf dem Host ablegen
-# - Token erzeugen und sicher ablegen
+# --- 6. Helfer-Dienst für Update und Neustart ---
+# - Flask für das System-Python installieren (der Helfer läuft auf dem Host, nicht im Container)
 # - systemd-Dienst anlegen, aktivieren und starten
+echo "Helfer-Dienst für Update und Neustart"
+SERVICE_NAME_HELPER="admin.service"
+
+sudo apt-get install -y python3-flask
+
+sudo git config --global --add safe.directory "$PROJECT_DIR"
+
+sed -e "s|@PROJECT_DIR@|$PROJECT_DIR|g" \
+    "$PROJECT_DIR/systemd/$SERVICE_NAME_HELPER" \
+    | sudo tee "/etc/systemd/system/$SERVICE_NAME_HELPER" > /dev/null
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now "$SERVICE_NAME_HELPER"
 
 # --- 7. Abschluss ---
 # - Zusammenfassung ausgeben (was wurde installiert, welche URL, wie geht es weiter)

@@ -4,6 +4,7 @@ import json
 import psutil
 import sqlite3
 import os
+import requests
 
 app = Flask(__name__)
 CORS(app)
@@ -16,11 +17,19 @@ def start():
 
 @app.route("/update", methods=["POST"])
 def updateRaspberryPi():
-    return jsonify({"status": "not implemented"}), 501
+    resposne = requests.post("http://localhost:5001/update")
+    if resposne.ok:
+            return jsonify({"status": "update erfolgreich"}), 200
+    else:
+        return jsonify({"status": "fehler beim updaten"}), 400
 
 @app.route("/restart", methods=["POST"])
 def restartRaspberryPi():
-    return jsonify({"status": "not implemented"}), 501
+    resposne = requests.post("http://localhost:5001/restart")
+    if resposne.ok:
+        return jsonify({"status": "restart erfolgreich"}), 200
+    else:
+        return jsonify({"status": "fehler beim neustarten"}), 400
 
 @app.route("/settings", methods=["POST"])
 def updateSettingsRaspberryPi():
