@@ -1,0 +1,25 @@
+[Unit]
+Description=Starts Chromium Browser in Kiosk Mode
+Requires=systemd-user-sessions.service network-online.target seatd.service
+Wants=network-online.target
+Conflicts=getty@tty1.service
+After=getty@tty1.service raspberry-pi-projekt.service network-online.target seatd.service systemd-user-sessions.service
+
+[Service]
+User=@USER@
+PAMName=login
+TTYPath=/dev/tty1
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+StandardInput=tty
+StandardOutput=journal
+TimeoutStartSec=240
+Environment=XDG_RUNTIME_DIR=/run/user/@UID@
+ExecStartPre=/bin/sh -c 'until curl -sf http://localhost/ > /dev/null; do sleep 2; done'
+ExecStart=/usr/bin/cage -- /usr/bin/chromium --kiosk --noerrdialogs --disable-infobars --incognito --ozone-platform=wayland http://localhost/
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
