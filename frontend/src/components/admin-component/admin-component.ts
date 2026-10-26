@@ -7,14 +7,14 @@ import { Component, OnInit, signal } from '@angular/core';
   styleUrl: './admin-component.scss',
 })
 export class AdminComponent implements OnInit {
-  private url = 'http://localhost:5000/health';
+  private url = `http://${window.location.hostname}:5000`;
   public systemstats = signal<any>(null);
   public publictransportlocation = signal("");
   public weatherlocation = signal("");
   public error = signal("");
   public info = signal("");
   async getsystemStats() {
-    const response = await fetch(this.url);
+    const response = await fetch(`${this.url}/health`);
     const data = await response.json();
     console.log(data);
     this.systemstats.set(data);
@@ -22,7 +22,7 @@ export class AdminComponent implements OnInit {
 
   async saveSettings(){
     try{
-      const respone = await fetch("http://localhost:5000/settings",
+      const respone = await fetch(`${this.url}/settings`,
       {
         method: "POST",
         headers: {
@@ -46,7 +46,7 @@ export class AdminComponent implements OnInit {
     this.error.set("");
     this.info.set("");
     try{
-      const response = await fetch(`http://localhost:5000/${path}`, {
+      const response = await fetch(`${this.url}/${path}`, {
         method: "POST"
       })
       if(!response.ok){
