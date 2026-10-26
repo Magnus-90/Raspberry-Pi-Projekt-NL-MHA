@@ -1,2 +1,4 @@
 /backend/.venv
 .vscode
+backend/db/*
+!backend/db/.gitkeep
