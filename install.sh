@@ -124,6 +124,76 @@ sudo systemctl daemon-reload
 sudo systemctl enable "$SERVICE_NAME_HELPER"
 sudo systemctl restart "$SERVICE_NAME_HELPER"
 
-# --- 7. Abschluss ---
+# --- 7. GitHub Actions Runner für das automatische Deployment ---
+# - Der Runner verbindet sich von sich aus mit GitHub, es muss nichts zum Pi geöffnet werden
+# - Das Registrierungs-Token ist nur kurz gültig und kommt aus GitHub (Settings > Actions > Runners > New self-hosted runner)
+# - Das Skript fragt nach dem Token. Alternativ ohne Rückfrage: RUNNER_TOKEN=<token> bash install.sh
+log "GitHub Actions Runner einrichten"
+
+RUNNER_DIR="/home/$TARGET_USER/actions-runner"
+RUNNER_REPO_URL="https://github.com/Magnus-90/Raspberry-Pi-Projekt-NL-MHA"
+
+# Ist kein Token übergeben und der Runner noch nicht eingerichtet, fragt das Skript danach.
+# Die Eingabe bleibt unsichtbar (-s), und mit einer leeren Eingabe wird der Schritt übersprungen.
+RUNNER_TOKEN="${RUNNER_TOKEN:-}"
+if [ ! -f "$RUNNER_DIR/.runner" ] && [ -z "$RUNNER_TOKEN" ] && [ -t 0 ]; then
+    log "Für den Runner wird ein Token aus GitHub gebraucht (Settings > Actions > Runners > New self-hosted runner). Leer lassen zum Überspringen."
+    read -r -s -p "Runner-Token: " RUNNER_TOKEN || true
+    echo
+fi
+
+if [ -f "$RUNNER_DIR/.runner" ]; then
+    log "Der Runner ist bereits eingerichtet, überspringe die Einrichtung."
+elif [ -z "${RUNNER_TOKEN:-}" ]; then
+    log "RUNNER_TOKEN ist nicht gesetzt, überspringe die Einrichtung des Runners."
+else
+    case "$(uname -m)" in
+        aarch64) RUNNER_ARCH="arm64" ;;
+        armv7l)  RUNNER_ARCH="arm" ;;
+        x86_64)  RUNNER_ARCH="x64" ;;
+        *)
+            echo "Unbekannte Architektur: $(uname -m)" >&2
+            exit 1
+            ;;
+    esac
+
+    # Neueste Version des Runners von GitHub lesen
+    RELEASE_JSON="$(curl -fsSL https://api.github.com/repos/actions/runner/releases/latest)"
+    RUNNER_VERSION="$(grep -m1 '"tag_name"' <<< "$RELEASE_JSON" | sed -E 's/.*"v([^"]+)".*/\1/')"
+    if [ -z "$RUNNER_VERSION" ]; then
+        echo "Die Version des Runners konnte nicht ermittelt werden." >&2
+        exit 1
+    fi
+
+    sudo -u "$TARGET_USER" mkdir -p "$RUNNER_DIR"
+    curl -fsSL -o /tmp/actions-runner.tar.gz \
+        "https://github.com/actions/runner/releases/download/v${RUNNER_VERSION}/actions-runner-linux-${RUNNER_ARCH}-${RUNNER_VERSION}.tar.gz"
+    sudo -u "$TARGET_USER" tar xzf /tmp/actions-runner.tar.gz -C "$RUNNER_DIR"
+    rm /tmp/actions-runner.tar.gz
+
+    sudo "$RUNNER_DIR/bin/installdependencies.sh"
+
+    # config.sh darf nicht als root laufen und muss im Runner-Ordner gestartet werden
+    (cd "$RUNNER_DIR" && sudo -u "$TARGET_USER" ./config.sh --unattended \
+        --url "$RUNNER_REPO_URL" \
+        --token "$RUNNER_TOKEN" \
+        --name "$(hostname)" \
+        --labels raspi \
+        --replace)
+
+    # Als Dienst installieren, damit der Runner beim Booten startet und als normaler Benutzer läuft
+    (cd "$RUNNER_DIR" && sudo ./svc.sh install "$TARGET_USER" && sudo ./svc.sh start)
+fi
+
+# --- 8. Abschluss ---
 # - Zusammenfassung ausgeben (was wurde installiert, welche URL, wie geht es weiter)
 # - Optional: Neustart anbieten
+
+log "Installation abgeschlossen"
+
+log "Damit die Änderungen wirksam werden muss das Gerät neugestartet werden"
+
+read -r -p "Neustarten? (ja/nein): " REBOOT || true
+if [ "$REBOOT" = "ja" ] && [ -t 0 ]; then
+    sudo reboot
+fi
