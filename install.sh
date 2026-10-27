@@ -158,7 +158,12 @@ else
     esac
 
     # Neueste Version des Runners von GitHub lesen
-    RUNNER_VERSION="$(curl -fsSL https://api.github.com/repos/actions/runner/releases/latest | grep -m1 '"tag_name"' | sed -E 's/.*"v([^"]+)".*/\1/')"
+    RELEASE_JSON="$(curl -fsSL https://api.github.com/repos/actions/runner/releases/latest)"
+    RUNNER_VERSION="$(grep -m1 '"tag_name"' <<< "$RELEASE_JSON" | sed -E 's/.*"v([^"]+)".*/\1/')"
+    if [ -z "$RUNNER_VERSION" ]; then
+        echo "Die Version des Runners konnte nicht ermittelt werden." >&2
+        exit 1
+    fi
 
     sudo -u "$TARGET_USER" mkdir -p "$RUNNER_DIR"
     curl -fsSL -o /tmp/actions-runner.tar.gz \
