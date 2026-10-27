@@ -1,10 +1,10 @@
 import { Component, OnDestroy, signal } from '@angular/core';
 
 @Component({
-  selector: 'app-time-conponent',
+  selector: 'app-time',
   imports: [],
-  templateUrl: './time-conponent.html',
-  styleUrl: './time-conponent.scss',
+  templateUrl: './time.html',
+  styleUrl: './time.scss',
 })
 export class TimeConponent implements OnDestroy {
   time = signal(new Date().toLocaleTimeString());

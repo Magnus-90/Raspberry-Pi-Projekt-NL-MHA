@@ -1,0 +1,51 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.publictransport{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.items{
+    display: grid;
+    align-content: start;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid black;
+    border-radius: 8px;
+    background-color: lightgray;
+    p{
+        margin: 0.3em;
+    }
+}
+
+.title{
+    font-size: min(4cqw, 6cqh);
+    margin: 0 0 0.3em;
+}
+
+.text{
+    font-size: min(2.8cqw, 4cqh);
+}
+
+.header{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    font-size: min(2.8cqw, 4cqh);
+    font-weight: bold;
+    place-items: center;
+}
+
+.item{
+    display: grid;
+    place-items: center;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.delay{
+    color: red;
+}

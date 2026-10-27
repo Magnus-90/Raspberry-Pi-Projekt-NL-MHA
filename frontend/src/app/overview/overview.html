@@ -1,0 +1,16 @@
+<div class="dashboard" #dashboard (selectstart)="$event.preventDefault()">
+    <app-panel class="module-time" title="Time" [style.grid-area]="area('time')"
+        (dragStarted)="dragStart('time', $event)"
+        (dropped)="drop('time', $event)"
+        (opened)="open('time')"><app-time /></app-panel>
+    <app-panel class="module-weather" title="Weather"
+        [style.grid-area]="area('weather')"
+        (dragStarted)="dragStart('weather', $event)"
+        (dropped)="drop('weather', $event)"
+        (opened)="open('weather')"><app-weather /></app-panel>
+    <app-panel class="module-public-transport" title="Public Transport"
+        [style.grid-area]="area('public-transport')"
+        (dragStarted)="dragStart('public-transport', $event)"
+        (dropped)="drop('public-transport', $event)"
+        (opened)="open('public-transport')"><app-public-transport /></app-panel>
+</div>

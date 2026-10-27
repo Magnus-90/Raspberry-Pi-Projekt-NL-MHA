@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TimeConponent } from './time-conponent';
+import { Overview } from './overview';
 
-describe('TimeConponent', () => {
-  let component: TimeConponent;
-  let fixture: ComponentFixture<TimeConponent>;
+describe('Overview', () => {
+  let component: Overview;
+  let fixture: ComponentFixture<Overview>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TimeConponent],
+      imports: [Overview],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TimeConponent);
+    fixture = TestBed.createComponent(Overview);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

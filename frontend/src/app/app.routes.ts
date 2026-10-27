@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
-import { WeatherComponent } from '../components/weather-component/weather-component';
-import { TimeConponent } from '../components/time-conponent/time-conponent';
-import { PublicTransport } from '../components/public-transport/public-transport';
-import { AdminComponent } from '../components/admin-component/admin-component';
+import { Overview } from './overview/overview';
+import { WeatherComponent } from './modules/weather/weather';
+import { TimeConponent } from './modules/time/time';
+import { PublicTransport } from './modules/public-transport/public-transport';
+import { AdminComponent } from './modules/admin/admin-component';
 export const routes: Routes = [
-    {path: '', redirectTo: 'clock', pathMatch: 'full'},
+    {path: '', component: Overview},
     {path: 'clock', component: TimeConponent},
     {path: 'weather', component: WeatherComponent},
     {path: 'publictransport', component: PublicTransport},
