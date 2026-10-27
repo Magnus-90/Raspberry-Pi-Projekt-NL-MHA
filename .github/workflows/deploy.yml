@@ -1,0 +1,14 @@
+name: Deploy
+permissions:
+  contents: read
+on:
+  push:
+    branches: [main]
+jobs:
+  Deploy:
+    runs-on: [self-hosted, linux]
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: false
+    steps:
+      - run: bash "$HOME/Raspberry-Pi-Projekt-NL-MHA/deploy.sh"
