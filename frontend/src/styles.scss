@@ -4,7 +4,27 @@ body {
   margin: 0;
 }
 
-// Mauszeiger auf allen Seiten ausblenden, die Admin-Seite stellt ihn wieder her
-* {
-  cursor: none;
+app-panel img {
+  -webkit-user-drag: none;
+}
+
+.content > :is(app-time, app-weather, app-public-transport) {
+  box-sizing: border-box;
+  width: 100vw;
+  height: 100vh;
+  padding: 12px;
+}
+
+.module-time, .content > app-time {
+  view-transition-name: module-time;
+}
+.module-weather, .content > app-weather {
+  view-transition-name: module-weather;
+}
+.module-public-transport, .content > app-public-transport {
+  view-transition-name: module-public-transport;
+}
+
+::view-transition-group(*) {
+  animation-duration: 400ms;
 }

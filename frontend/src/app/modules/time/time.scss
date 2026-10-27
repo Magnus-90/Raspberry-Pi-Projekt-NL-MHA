@@ -1,0 +1,46 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.timecomponent{
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 8px;
+    height: 100%;
+}
+
+// Schmale oder hohe Kachel: Datum unter die Uhrzeit
+@container (max-aspect-ratio: 3/2) {
+    .timecomponent{
+        grid-template-columns: 1fr;
+        grid-template-rows: 2fr 1fr;
+    }
+}
+
+.time, .date{
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    min-height: 0;
+    background-color: black;
+    border-radius: 8px;
+    // Jede Box ist selbst ein Container, damit die Schrift genau in sie passt
+    container-type: size;
+
+    p{
+        line-height: 1;
+        margin: 0;
+        color: white;
+        text-align: center;
+    }
+}
+
+.time p{
+    font-size: min(22cqw, 70cqh);
+}
+
+.date p{
+    padding: 8px;
+    font-size: min(13cqw, 28cqh);
+}

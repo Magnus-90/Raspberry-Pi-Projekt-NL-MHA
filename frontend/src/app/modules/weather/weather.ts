@@ -32,10 +32,10 @@ const WMO_ICONS: Record<number, [string, string]> = {
 };
 
 @Component({
-  selector: 'app-weather-component',
+  selector: 'app-weather',
   imports: [],
-  templateUrl: './weather-component.html',
-  styleUrl: './weather-component.scss',
+  templateUrl: './weather.html',
+  styleUrl: './weather.scss',
 })
 export class WeatherComponent implements OnInit {
   weatherdata = signal<any>(null);

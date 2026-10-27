@@ -1,0 +1,12 @@
+<div class="panel" cdkDrag
+    (cdkDragStarted)="onDragStarted($event)"
+    (cdkDragEnded)="onDragEnded($event)"
+    (pointerdown)="onPointerDown($event)"
+    (click)="onClick($event)">
+    <div class="panel-header" cdkDragHandle>
+        {{ title() }}
+    </div>
+    <div class="panel-body">
+        <ng-content />
+    </div>
+</div>
