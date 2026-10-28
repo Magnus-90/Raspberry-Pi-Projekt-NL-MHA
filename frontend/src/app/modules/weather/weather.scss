@@ -38,7 +38,7 @@
 .city {
   grid-area: city;
   color: #fff;
-  font-size: 5vw;
+  font-size: clamp(0.9rem, 2.5cqw, 4rem);
 
   p {
     margin: 0;
