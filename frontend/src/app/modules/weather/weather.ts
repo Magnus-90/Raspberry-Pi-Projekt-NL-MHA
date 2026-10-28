@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 
 const WMO_ICONS: Record<number, [string, string]> = {
   0: ['clear-day', 'clear-night'],
@@ -37,14 +37,20 @@ const WMO_ICONS: Record<number, [string, string]> = {
   templateUrl: './weather.html',
   styleUrl: './weather.scss',
 })
-export class WeatherComponent implements OnInit {
+export class WeatherComponent implements OnInit, OnDestroy {
   public url = `http://${window.location.hostname}:5000`;
+  private timer?: ReturnType<typeof setInterval>;
   weatherdata = signal<any>(null);
   cityname = signal("");
+  error = signal("");
   async getCurrentWeahterData(latitude : any, longitude : any) {
     const response = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration&models=meteoswiss_icon_seamless&current=temperature_2m,weather_code,is_day&timezone=Europe%2FBerlin&forecast_days=1`,
     );
+
+    if(!response.ok){
+      throw new Error(`Open-Meteo antwortet mit ${response.status}`);
+    }
 
     const data = await response.json();
     return data;
@@ -84,7 +90,7 @@ export class WeatherComponent implements OnInit {
     return `icons/${isDay ? entry[0] : entry[1]}.svg`;
   }
 
-  async ngOnInit() {
+  async loadWeatherData(){
     try {
       this.cityname.set(await this.getWeatherSettings()); 
       const coordinates = await this.convertWeatherLocation(this.cityname());
@@ -93,8 +99,21 @@ export class WeatherComponent implements OnInit {
       }
       const data = await this.getCurrentWeahterData(coordinates.latitude, coordinates.longitude);
       this.weatherdata.set(data);
+      this.error.set("");
     } catch (e) {
       console.error('Weather fetch failed', e);
+      this.error.set("Wetterdaten konnten nicht geladen werden");
     }
+  }
+
+  async ngOnInit() {
+    this.loadWeatherData();
+    this.timer = setInterval(async () => {
+      this.loadWeatherData();
+    }, 600000);
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.timer);
   }
 }

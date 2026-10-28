@@ -8,12 +8,6 @@ import db_methods
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/")
-def start():
-    x =  '{ "name":"John", "age":30, "city":"New York"}'
-    y = json.loads(x)
-    return y
-
 # The helper runs on the Pi (not in the container), reachable via host.docker.internal
 HELPER_URL = "http://host.docker.internal:5001"
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 
 @Component({
   selector: 'app-admin-component',
@@ -6,18 +6,28 @@ import { Component, OnInit, signal } from '@angular/core';
   templateUrl: './admin-component.html',
   styleUrl: './admin-component.scss',
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit, OnDestroy {
   private url = `http://${window.location.hostname}:5000`;
   public systemstats = signal<any>(null);
   public publictransportlocation = signal("");
   public weatherlocation = signal("");
   public error = signal("");
   public info = signal("");
+  private timer?: ReturnType<typeof setInterval>;
+  
   async getsystemStats() {
-    const response = await fetch(`${this.url}/health`);
-    const data = await response.json();
-    console.log(data);
-    this.systemstats.set(data);
+    try{
+      const response = await fetch(`${this.url}/health`);
+      if(!response.ok){
+        this.error.set(`Fehler beim laden der Systeminformationen: ${response.status}`);
+        return;
+      }
+      const data = await response.json();
+      this.systemstats.set(data);
+      this.error.set("");
+    } catch (error) {
+      this.error.set(`Fehler beim laden der Systeminformationen: ${error}`)
+    }
   }
 
   async saveSettings(){
@@ -87,11 +97,19 @@ export class AdminComponent implements OnInit {
   }
 
   async ngOnInit() {
-    const settings = await this.getSettings()
-    this.publictransportlocation.set(settings.publictransportlocation ?? "")
-    this.weatherlocation.set(settings.weatherlocation ?? "")
-    setInterval(async () => {
+    this.timer = setInterval(async () => {
       await this.getsystemStats();
     }, 10000);
+    const settings = await this.getSettings()
+    await this.getsystemStats();
+    if (settings == undefined){
+      return;
+    }
+    this.publictransportlocation.set(settings.publictransportlocation ?? "")
+    this.weatherlocation.set(settings.weatherlocation ?? "")
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.timer);
   }
 }
