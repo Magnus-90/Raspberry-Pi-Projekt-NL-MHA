@@ -6,8 +6,13 @@
 .weathercomponent {
   --bg: #0f172a;
   --text: #f1f5f9;
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "icon city"
+    "icon data";
   place-items: center;
   box-sizing: border-box;
   height: 100%;
@@ -17,16 +22,32 @@
   background-color: var(--bg);
 }
 
-// Hohe Kachel: Icon über den Daten
+// Hohe Kachel: Ortsname, Icon und Daten untereinander
 @container (max-aspect-ratio: 1/1) {
   .weathercomponent {
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: auto 1fr 1fr;
+    grid-template-areas:
+      "city"
+      "icon"
+      "data";
+  }
+}
+
+// Ortsname: weiss, oben rechts über den Infos
+.city {
+  grid-area: city;
+  color: #fff;
+  font-size: 5vw;
+
+  p {
+    margin: 0;
   }
 }
 
 .icon {
   display: grid;
+  grid-area: icon;
   place-items: center;
   width: 100%;
   height: 100%;
@@ -40,6 +61,7 @@
 
 .data {
   display: grid;
+  grid-area: data;
   grid-template-rows: repeat(3, 1fr);
   width: 100%;
   height: 100%;
