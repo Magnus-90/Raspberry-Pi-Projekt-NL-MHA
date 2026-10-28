@@ -1,5 +1,8 @@
 @if (weatherdata(); as weather) {
   <div class="weathercomponent">
+    <div class="city">
+      <p>{{ cityname() }}</p>
+    </div>
     <div class="icon">
       <img [src]="getIconPath(weather.current.weather_code, weather.current.is_day)" alt="" />
     </div>

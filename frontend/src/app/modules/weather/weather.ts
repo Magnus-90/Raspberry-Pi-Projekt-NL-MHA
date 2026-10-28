@@ -40,6 +40,7 @@ const WMO_ICONS: Record<number, [string, string]> = {
 export class WeatherComponent implements OnInit {
   public url = `http://${window.location.hostname}:5000`;
   weatherdata = signal<any>(null);
+  cityname = signal("");
   async getCurrentWeahterData(latitude : any, longitude : any) {
     const response = await fetch(
       `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,daylight_duration,sunshine_duration&models=meteoswiss_icon_seamless&current=temperature_2m,weather_code,is_day&timezone=Europe%2FBerlin&forecast_days=1`,
@@ -85,8 +86,8 @@ export class WeatherComponent implements OnInit {
 
   async ngOnInit() {
     try {
-      const name = await this.getWeatherSettings();
-      const coordinates = await this.convertWeatherLocation(name);
+      this.cityname.set(await this.getWeatherSettings()); 
+      const coordinates = await this.convertWeatherLocation(this.cityname());
       if (!coordinates) {
         return;
       }
