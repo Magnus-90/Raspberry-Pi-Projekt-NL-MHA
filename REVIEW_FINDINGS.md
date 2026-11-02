@@ -39,9 +39,6 @@ Jeder Befund wurde am Code nachgeprüft. Sortiert nach Schwere. Nur Beobachtunge
 ## Weitere Beobachtungen (niedrig)
 
 - **Diff:** Nach dem Entfernen der Route `/` ist `import json` in `backend/backend.py` Z. 3 ungenutzt.
-- `host-helper/helper.py` Z. 16 und `systemd/raspberry-pi-projekt.service` Z. 12 nutzen `git pull` ohne `--ff-only` (anders als `deploy.sh`). Bei lokalen Änderungen entsteht ein Merge-Commit, danach scheitert `deploy.sh` mit `--ff-only` dauerhaft. Kein Lock gegen zwei parallele Updates.
-- `backend.py` Z. 38/59: Fehlerantworten enthalten `str(e)` (Pfad des Schlüssels, Projektinfos).
-- `backend.py` Z. 76: `except FileNotFoundError` um `psutil.cpu_percent` passt nicht zu den Fehlern, die psutil wirft.
 - `weather.ts` Z. 66: Geocoding mit `count=1` ohne `countryCode=CH`, mehrdeutige Namen (z. B. „Baden“) können einen Ort außerhalb der Schweiz liefern.
 - `admin-component.ts` Z. 23-43: `saveSettings` setzt einen alten Fehler nicht zurück und gibt kein Erfolgs-Feedback. Tippfehler `respone`.
 - Backend-URL `http://${hostname}:5000` ist in drei Komponenten dupliziert, `/settings` wird in Wetter und ÖV separat implementiert.
@@ -62,7 +59,7 @@ Jeder Befund wurde am Code nachgeprüft. Sortiert nach Schwere. Nur Beobachtunge
 
 - [ x ] 5: `AdminComponent.ngOnInit` gegen `undefined` aus `getSettings()` absichern
 - [ x ] 6: Admin: `OnDestroy` mit `clearInterval`, try/catch in `getsystemStats()`, Werte sofort beim Start laden
-- [ ] 8: Rückweg aus dem Vollbild (Klick/Tippen oder Timeout zurück zur Übersicht) Nicht nötig da mit Chromium Gesten Steuerung möglich.
+- [ x ] 8: Rückweg aus dem Vollbild (Klick/Tippen oder Timeout zurück zur Übersicht) Nicht nötig da mit Chromium Gesten Steuerung möglich.
 - [ x ] 9: Zeit-Modul mit Locale `de-CH`
 
 ### Niedrig
