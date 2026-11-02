@@ -69,7 +69,7 @@ export class WeatherComponent implements OnInit, OnDestroy {
   }
 
   async convertWeatherLocation(name : string){
-    const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=en&format=json`, {
+    const response = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(name)}&count=1&language=en&format=json&countryCode=CH`, {
       method: "GET"
     })
     if(!response.ok){

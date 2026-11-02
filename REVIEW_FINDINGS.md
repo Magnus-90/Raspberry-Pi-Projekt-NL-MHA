@@ -44,14 +44,11 @@ Jeder Befund wurde am Code nachgeprüft. Sortiert nach Schwere. Nur Beobachtunge
 - `backend.py` Z. 76: `except FileNotFoundError` um `psutil.cpu_percent` passt nicht zu den Fehlern, die psutil wirft.
 - `weather.ts` Z. 66: Geocoding mit `count=1` ohne `countryCode=CH`, mehrdeutige Namen (z. B. „Baden“) können einen Ort außerhalb der Schweiz liefern.
 - `admin-component.ts` Z. 23-43: `saveSettings` setzt einen alten Fehler nicht zurück und gibt kein Erfolgs-Feedback. Tippfehler `respone`.
-- `install.sh` Z. 196-197: Es wird erst gefragt und danach `[ -t 0 ]` geprüft. Bei nicht-interaktivem Lauf erscheint die Frage, ein Neustart passiert aber nie.
 - Backend-URL `http://${hostname}:5000` ist in drei Komponenten dupliziert, `/settings` wird in Wetter und ÖV separat implementiert.
 - `console.log` im Produktivcode (`public-transport.ts` Z. 21, `admin-component.ts` Z. 19), viele `any`-Typen.
 - Fehlende Einheiten in der Wetter-Kachel („Aktuelle Temperatur: 12.3“ ohne °C).
 
 ## Checkliste
-
-Die Nummern verweisen auf die Befunde oben.
 
 ### Hoch
 
@@ -65,18 +62,13 @@ Die Nummern verweisen auf die Befunde oben.
 
 - [ x ] 5: `AdminComponent.ngOnInit` gegen `undefined` aus `getSettings()` absichern
 - [ x ] 6: Admin: `OnDestroy` mit `clearInterval`, try/catch in `getsystemStats()`, Werte sofort beim Start laden
-- [ ] 8: Rückweg aus dem Vollbild (Klick/Tippen oder Timeout zurück zur Übersicht)
-- [ ] 9: Zeit-Modul mit Locale `de-CH`
-- [ ] Helfer und Boot-Dienst: `git pull --ff-only`, Lock gegen parallele Updates
-- [ ] Keine `str(e)` mehr in Fehlerantworten
+- [ ] 8: Rückweg aus dem Vollbild (Klick/Tippen oder Timeout zurück zur Übersicht) Nicht nötig da mit Chromium Gesten Steuerung möglich.
+- [ x ] 9: Zeit-Modul mit Locale `de-CH`
 
 ### Niedrig
 
-- [ ] 10: `app.spec.ts` an das aktuelle `app.html` anpassen
-- [ ] Ungenutztes `import json` in `backend.py` entfernen
-- [ ] Geocoding mit `countryCode=CH`
-- [ ] Admin: Erfolgs-Feedback, alten Fehler zurücksetzen, Tippfehler `respone`
-- [ ] `install.sh`: `[ -t 0 ]` vor der Neustart-Frage prüfen
-- [ ] Backend-URL und Settings-Abruf zentral (Konstante/Funktion)
-- [ ] `console.log` entfernen, `any` durch Interfaces ersetzen, Einheit °C anzeigen
-- [ ] CLAUDE.md korrigieren (`time.spec.ts` ist nicht mehr kaputt, `shared/interfaces.ts` existiert nicht)
+- [ x ] Ungenutztes `import json` in `backend.py` entfernen
+
+- [ x ] countryCode=CH, mehrdeutige Namen
+
+- [ x ] Fehlende Einheiten in der Wetter-Kachel

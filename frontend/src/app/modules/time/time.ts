@@ -11,7 +11,12 @@ export class TimeConponent implements OnDestroy {
   private id = setInterval(() => this.time.set(new Date().toLocaleTimeString()), 1000);
 
   getCurrentDate(){
-    const date = new Date().toDateString();
+    const date = new Date().toLocaleDateString('de-CH',{
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
     return date;
   }
 
