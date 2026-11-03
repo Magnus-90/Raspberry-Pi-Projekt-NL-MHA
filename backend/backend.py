@@ -3,9 +3,11 @@ from flask_cors import CORS
 import psutil
 import requests
 import db_methods
+import auth
+import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=os.environ.get("ALLOWED_ORIGINS", "http://localhost").split(","))
 
 # The helper runs on the Pi (not in the container), reachable via host.docker.internal
 HELPER_URL = "http://host.docker.internal:5001"
@@ -20,10 +22,12 @@ def call_helper(path, started_message):
     return jsonify({"status": "Helfer meldet einen Fehler", "details": response.text}), 502
 
 @app.route("/update", methods=["POST"])
+@auth.require_admin
 def updateRaspberryPi():
     return call_helper("update", "update gestartet")
 
 @app.route("/restart", methods=["POST"])
+@auth.require_admin
 def restartRaspberryPi():
     return call_helper("restart", "neustart gestartet")
 
@@ -37,6 +41,7 @@ def getSettingsRaspberryPi():
         return jsonify({"error": "Firestore-Fehler", "details": str(e)}), 500
 
 @app.route("/settings", methods=["POST"])
+@auth.require_admin
 def updateSettingsRaspberryPi():
     data = request.get_json(silent=True)
     if not isinstance(data, dict) or not data:
@@ -48,7 +53,7 @@ def updateSettingsRaspberryPi():
 
     settings = {}
     for key, value in data.items():
-        if not isinstance(value, str) or len(value.strip()) > SETTINGS_MAX_LENGTH:
+        if not isinstance(value, str) or not value.strip() or len(value.strip()) > SETTINGS_MAX_LENGTH:
             return jsonify({"error": f"Ungültiger Wert für {key}"}), 400
         settings[key] = value.strip()
 
@@ -97,6 +102,14 @@ def get_health_data():
     json_payload = jsonify(json_values)
 
     return json_payload
+
+@app.route("/login", methods=["POST"])
+def login_route():
+    data = request.get_json(silent=True)
+    token = auth.login(data.get("password") if isinstance(data, dict) else None)
+    if token is None:
+        return jsonify({"error": "Falsches Passwort"}), 401
+    return jsonify({"token": token})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)

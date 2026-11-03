@@ -3,3 +3,4 @@
 backend/db/*
 !backend/db/.gitkeep
 /backend/__pycache__
+.env

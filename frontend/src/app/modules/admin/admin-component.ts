@@ -1,4 +1,6 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
+
+const TOKEN_KEY = 'admin-token';
 
 @Component({
   selector: 'app-admin-component',
@@ -13,8 +15,49 @@ export class AdminComponent implements OnInit, OnDestroy {
   public weatherlocation = signal("");
   public error = signal("");
   public info = signal("");
+  public password = signal("");
+  private token = signal(sessionStorage.getItem(TOKEN_KEY) ?? "");
+  public loggedIn = computed(() => this.token() !== "");
   private timer?: ReturnType<typeof setInterval>;
-  
+
+  private authHeaders() {
+    return {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${this.token()}`
+    };
+  }
+
+  logout(message = "") {
+    sessionStorage.removeItem(TOKEN_KEY);
+    this.token.set("");
+    this.systemstats.set(null);
+    this.info.set("");
+    this.error.set(message);
+  }
+
+  async login(event: Event) {
+    event.preventDefault();
+    this.error.set("");
+    try {
+      const response = await fetch(`${this.url}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ "password": this.password() })
+      });
+      if (!response.ok) {
+        this.error.set(response.status === 401 ? "Falsches Passwort" : `Login fehlgeschlagen: ${response.status}`);
+        return;
+      }
+      const data = await response.json();
+      sessionStorage.setItem(TOKEN_KEY, data.token);
+      this.token.set(data.token);
+      this.password.set("");
+      await this.loadData();
+    } catch (error) {
+      this.error.set(`Login fehlgeschlagen: ${error}`);
+    }
+  }
+
   async getsystemStats() {
     try{
       const response = await fetch(`${this.url}/health`);
@@ -35,15 +78,17 @@ export class AdminComponent implements OnInit, OnDestroy {
       const respone = await fetch(`${this.url}/settings`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: this.authHeaders(),
         body: JSON.stringify ({
           "weatherlocation": this.weatherlocation(),
           "publictransportlocation": this.publictransportlocation(),
         })
       }
       )
+      if(respone.status === 401){
+        this.logout("Sitzung abgelaufen, bitte neu anmelden");
+        return;
+      }
       if(!respone.ok){
         this.error.set(`Fehler beim Speichern: ${respone.status}`)
       }
@@ -57,8 +102,13 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.info.set("");
     try{
       const response = await fetch(`${this.url}/${path}`, {
-        method: "POST"
+        method: "POST",
+        headers: this.authHeaders()
       })
+      if(response.status === 401){
+        this.logout("Sitzung abgelaufen, bitte neu anmelden");
+        return;
+      }
       if(!response.ok){
         this.error.set(`${label} fehlgeschlagen: ${response.status}`);
         return;
@@ -96,10 +146,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
-  async ngOnInit() {
-    this.timer = setInterval(async () => {
-      await this.getsystemStats();
-    }, 10000);
+  private async loadData() {
     const settings = await this.getSettings()
     await this.getsystemStats();
     if (settings == undefined){
@@ -107,6 +154,17 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
     this.publictransportlocation.set(settings.publictransportlocation ?? "")
     this.weatherlocation.set(settings.weatherlocation ?? "")
+  }
+
+  async ngOnInit() {
+    this.timer = setInterval(async () => {
+      if (this.loggedIn()) {
+        await this.getsystemStats();
+      }
+    }, 10000);
+    if (this.loggedIn()) {
+      await this.loadData();
+    }
   }
 
   ngOnDestroy() {

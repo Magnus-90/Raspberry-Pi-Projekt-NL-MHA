@@ -51,7 +51,28 @@ scp backend/db/<schluessel-datei>.json admin@<pi-name>:~/Raspberry-Pi-Projekt-NL
 
 Der Dateiname muss mit `KEY_PATH` in `backend/db_methods.py` übereinstimmen.
 
-### 3. Installationsskript ausführen
+### 3. Admin-Passwort festlegen (`.env`)
+
+Die schreibenden Funktionen des Admin Panels (Einstellungen speichern, Update, Neustart) sind durch ein Passwort geschützt. Das Passwort steht in der Datei `.env` im Projektordner. Sie liegt **nicht** im Repository (`.gitignore`), muss also auf dem Pi von Hand angelegt werden:
+
+```bash
+cd ~/Raspberry-Pi-Projekt-NL-MHA
+read -rsp "Admin-Passwort (mind. 12 Zeichen): " pw; echo
+if [ ${#pw} -ge 12 ]; then
+  printf 'ADMIN_PASSWORD=%s\n' "$pw" > .env && chmod 600 .env && echo ".env angelegt"
+else
+  echo "Zu kurz, bitte nochmal"
+fi
+unset pw
+```
+
+Die Eingabe bleibt unsichtbar. Das Passwort sollte lang sein (mindestens 12 Zeichen), weil das Login keine Bremse bei Fehlversuchen hat. Es darf **kein** `$`, `#`, Anführungszeichen oder Leerzeichen enthalten, sonst liest Docker Compose es falsch ein.
+
+Alternativ lässt sich ein Zufallspasswort erzeugen: `echo "ADMIN_PASSWORD=$(openssl rand -hex 16)" > .env` (danach mit `cat .env` ansehen und notieren).
+
+**Wichtig:** Fehlt die Datei, startet `docker compose up` nicht, und damit auch das Backend nicht. Ist `ADMIN_PASSWORD` leer, startet alles, aber niemand kann sich anmelden.
+
+### 4. Installationsskript ausführen
 
 Als normaler Benutzer, **nicht** mit `sudo` (das Skript ruft `sudo` selbst auf, wo es nötig ist):
 
@@ -72,7 +93,7 @@ Das Skript kann mehrfach ausgeführt werden. Es erledigt der Reihe nach:
 
 Der Docker-Build dauert beim ersten Mal auf dem Pi mehrere Minuten.
 
-### 4. Neu starten
+### 5. Neu starten
 
 Das Skript bietet am Ende den Neustart an. Alternativ von Hand:
 
@@ -123,7 +144,36 @@ curl http://localhost:5001/health
 curl http://localhost:5000/health
 ```
 
-Das Admin Panel ist im Netzwerk unter `http://<pi-name>/admin` erreichbar, zum Beispiel `http://testraspy.local/admin`.
+Das Admin Panel ist im Netzwerk unter `http://<pi-name>/admin` erreichbar, zum Beispiel `http://testraspy.local/admin`. Es verlangt das Passwort aus der `.env` (siehe "Admin Panel und Login").
+
+Zugriffsschutz prüfen (beide müssen `401` liefern, `GET /settings` weiterhin `200`):
+
+```bash
+curl -i -X POST http://localhost:5000/restart
+curl -i -X POST -H "Content-Type: application/json" -d '{"weatherlocation":"x"}' http://localhost:5000/settings
+curl -i http://localhost:5000/settings
+```
+
+## Admin Panel und Login
+
+Ablauf:
+
+1. Das Admin Panel zeigt zuerst nur ein Passwortfeld.
+2. Das Frontend schickt das Passwort per `POST /login` ans Backend.
+3. Stimmt es mit `ADMIN_PASSWORD` überein, gibt das Backend ein zufälliges Token zurück. Es gilt **1 Stunde** und liegt nur im Arbeitsspeicher des Backends.
+4. Das Frontend speichert das Token in `sessionStorage` (weg beim Schliessen des Tabs) und sendet es bei geschützten Aufrufen als `Authorization: Bearer <token>`.
+5. Bei `401` (Token abgelaufen oder Backend neu gestartet) meldet sich das Panel ab und zeigt wieder das Login. Der Knopf "Logout" macht das von Hand.
+
+| Route | Schutz |
+|---|---|
+| `POST /login` | offen (prüft das Passwort) |
+| `GET /settings` | offen, der Kiosk braucht den Ort ohne Anmeldung |
+| `GET /health` | offen |
+| `POST /settings`, `POST /update`, `POST /restart` | nur mit gültigem Token (sonst `401`) |
+
+Der Code liegt in `backend/auth.py` (`login()` und der Decorator `require_admin`) und im Admin-Modul des Frontends. Bei einem Neustart des Backends sind alle Tokens ungültig. Das Passwort ändert man in der `.env`, danach `docker compose up -d` im Projektordner.
+
+Neue Python-Dateien im Backend müssen im `backend/dockerfile` in der `COPY`-Zeile stehen, sonst findet der Container sie nicht.
 
 ## Aktualisieren
 
