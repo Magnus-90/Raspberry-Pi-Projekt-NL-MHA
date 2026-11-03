@@ -47,16 +47,16 @@ Ein Haken heisst: Der Testfall wurde ausgeführt und das Ergebnis entspricht der
 
 ### IDOR / Zugriffskontrolle
 
-- [ ] **7** Unbekannte Schlüssel in `POST /settings` liefern 400.
-- [ ] **8** Zusatzfeld (`admin: true`) liefert 400, und es wird nichts gespeichert.
-- [ ] **9** Direkter Firestore-Zugriff ist durch Security Rules gesperrt.
+- [ x ] **7** Unbekannte Schlüssel in `POST /settings` liefern 400.
+- [ x ] **8** Zusatzfeld (`admin: true`) liefert 400, und es wird nichts gespeichert.
+- [ x ] **9** Direkter Firestore-Zugriff ist durch Security Rules gesperrt.
 
 ### XSS und Injection
 
-- [ ] **10** Stored XSS über die Einstellungen führt kein Script aus.
-- [ ] **11** Fremde API-Antworten und Fehlermeldungen werden als Text gerendert.
-- [ ] **12** `&` und `%26` im Ortsnamen ändern die externe URL nicht.
-- [ ] **13** Ungültige Eingaben liefern 400.
+- [ x ] **10** Stored XSS über die Einstellungen führt kein Script aus.
+- [ x ] **11** Fremde API-Antworten und Fehlermeldungen werden als Text gerendert.
+- [ x ] **12** `&` und `%26` im Ortsnamen ändern die externe URL nicht.
+- [ x ] **13** Ungültige Eingaben liefern 400.
 
 ## Fazit
 

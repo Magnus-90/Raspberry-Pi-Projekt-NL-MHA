@@ -53,7 +53,7 @@ def updateSettingsRaspberryPi():
 
     settings = {}
     for key, value in data.items():
-        if not isinstance(value, str) or len(value.strip()) > SETTINGS_MAX_LENGTH:
+        if not isinstance(value, str) or not value.strip() or len(value.strip()) > SETTINGS_MAX_LENGTH:
             return jsonify({"error": f"Ungültiger Wert für {key}"}), 400
         settings[key] = value.strip()
 
