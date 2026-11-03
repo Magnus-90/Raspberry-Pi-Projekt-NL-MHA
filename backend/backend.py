@@ -7,7 +7,7 @@ import auth
 import os
 
 app = Flask(__name__)
-CORS(app, origins=os.environ.get("ALLOWED_ORIGINS", "http://localhost").split(","))
+CORS(app)
 
 # The helper runs on the Pi (not in the container), reachable via host.docker.internal
 HELPER_URL = "http://host.docker.internal:5001"
