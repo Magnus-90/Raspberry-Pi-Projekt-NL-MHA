@@ -49,7 +49,7 @@ Jeder Befund wurde am Code nachgeprüft. Sortiert nach Schwere. Nur Beobachtunge
 
 ### Hoch
 
-- [ ] 1: Token-Auth für `/update`, `/restart`, `POST /settings`; CORS auf die eigene Origin einschränken; Host-Helfer nur an die Docker-Bridge/localhost binden
+- [ ] 1: Token-Auth für `/update`, `/restart`, `POST /settings`; CORS auf die eigene Origin einschränken; Host-Helfer nur an die Docker-Bridge/localhost binden. Gehört zu Security.
 - [ x ] 2: ÖV: `destroyed`-Flag, nach Destroy keinen neuen Timer mehr planen
 - [ x ] 3: Wetter periodisch neu laden (z. B. alle 10-15 min), dabei auch den Ort neu lesen
 - [ x ] 4: Wetter: `response.ok` prüfen, Template gegen fehlendes `current` absichern, Fehlermeldung anzeigen
