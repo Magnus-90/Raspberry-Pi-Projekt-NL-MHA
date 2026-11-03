@@ -9,16 +9,19 @@
     <div class="data">
       <div class="currentTemperature">
         <img class="smallIcons" src="icons/thermometer-celsius.svg" alt="" />
-        <p class="text">Aktuelle Temperatur: {{ weather.current.temperature_2m }}</p>
+        <p class="text">Aktuelle Temperatur: {{ weather.current.temperature_2m }} °C</p>
       </div>
       <div class="maxTemperature">
         <img class="smallIcons" src="icons/thermometer-warmer.svg" alt="" />
-        <p class="text">Maximale Temperatur: {{ weather.daily.temperature_2m_max }}</p>
+        <p class="text">Maximale Temperatur: {{ weather.daily.temperature_2m_max }} °C</p>
       </div>
       <div class="minTemperature">
         <img class="smallIcons" src="icons/thermometer-colder.svg" alt="" />
-        <p class="text">Minimale Temperatur: {{ weather.daily.temperature_2m_min }}</p>
+        <p class="text">Minimale Temperatur: {{ weather.daily.temperature_2m_min }} °C</p>
       </div>
     </div>
   </div>
+}
+@if (error()) {
+  <p>{{ error() }}</p>
 }

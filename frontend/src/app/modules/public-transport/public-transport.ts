@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 export class PublicTransport implements OnInit, OnDestroy {
   public url = `http://${window.location.hostname}:5000`;
   private timer?: ReturnType<typeof setTimeout>;
+  private destroyed = false;
   publictransportdata = signal<any>(null);
   async getpublictransportdata(location : string) {
     if(!location){
@@ -38,6 +39,9 @@ export class PublicTransport implements OnInit, OnDestroy {
     let wait = 30_000;
     try {
       const data = await this.getpublictransportdata(await this.getPublicTransportSettings());
+      if (this.destroyed) {
+        return;
+      }
       this.publictransportdata.set(data);
 
       if (!data) {
@@ -54,7 +58,9 @@ export class PublicTransport implements OnInit, OnDestroy {
     } catch (e) {
       console.error('Public transport fetch failed', e);
     }
-
+    if (this.destroyed){
+      return;
+    }
     this.timer = setTimeout(() => this.update(), wait);
   }
 
@@ -63,6 +69,7 @@ export class PublicTransport implements OnInit, OnDestroy {
   }
 
   async ngOnDestroy() {
+    this.destroyed = true;
     clearTimeout(this.timer);
   }
 }

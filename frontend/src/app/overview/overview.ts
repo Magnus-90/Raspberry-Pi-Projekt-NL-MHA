@@ -127,4 +127,5 @@ export class Overview {
     const row = point.y - rect.top < rect.height / 2 ? 0 : 1;
     return row * 2 + col;
   }
+
 }
