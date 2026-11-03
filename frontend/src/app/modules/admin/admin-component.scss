@@ -14,6 +14,29 @@
     font-size: 25px;
 }
 
+.login{
+    display: grid;
+    gap: 12px;
+    max-width: 400px;
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid black;
+    border-radius: 8px;
+
+    button{
+        background-color: gray;
+        padding: 10px;
+        border: 0px;
+        border-radius: 8px;
+        color: white;
+
+        &:hover{
+            cursor: pointer;
+            background-color: rgb(97, 97, 97);
+        }
+    }
+}
+
 .konfigurations, .systemstats{
     display: grid;
     grid-template-columns: 1fr;

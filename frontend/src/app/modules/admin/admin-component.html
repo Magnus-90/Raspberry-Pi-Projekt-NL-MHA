@@ -1,6 +1,16 @@
 <div class="title">
     <strong>Admin Panel</strong>
 </div>
+@if (!loggedIn()) {
+    <form class="login" (submit)="login($event)">
+        <label for="password">Passwort:</label>
+        <input id="password" type="password" [value]="password()" (input)="password.set($any($event.target).value)">
+        @if (error()) {
+            <p class="error">{{ error() }}</p>
+        }
+        <button type="submit">Anmelden</button>
+    </form>
+} @else {
 <div class="admincomponent">
     <div class="systemstats">
         <strong>System Informationen</strong>
@@ -33,5 +43,7 @@
         <button (click)="saveSettings()">Speichern</button>
         <button (click)="updatePi()">Raspberry Pi Display Updaten</button>
         <button (click)="restartPi()">Raspberry Pi Neustarten</button>
+        <button (click)="logout()">Logout</button>
     </div>
 </div>
+}
