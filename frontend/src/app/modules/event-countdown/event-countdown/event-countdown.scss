@@ -1,0 +1,52 @@
+:host {
+    display: block;
+    height: 100%;
+}
+
+.eventCountdown {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 0.4em;
+    overflow: hidden;
+}
+
+.nextEvent {
+    display: grid;
+    place-items: center;
+    padding: 0.6em;
+    border: 1px solid black;
+    border-radius: 8px;
+    background-color: lightgray;
+    text-align: center;
+
+    strong {
+        font-size: min(4cqw, 6cqh);
+    }
+
+    p {
+        margin: 0.2em 0 0;
+        font-size: min(6cqw, 9cqh);
+        font-weight: bold;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.upCommingEvents{
+    font-size: min(2.8cqw, 4cqh);
+}
+
+hr {
+    width: 100%;
+    margin: 0;
+    border: none;
+    border-top: 1px solid black;
+}
+
+strong {
+    font-size: min(3.2cqw, 5cqh);
+}
+
+p {
+    margin: 0.2em 0;
+}

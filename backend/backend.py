@@ -4,7 +4,7 @@ import psutil
 import requests
 import db_methods
 import auth
-import os
+from datetime import datetime, timezone
 
 app = Flask(__name__)
 CORS(app)
@@ -110,6 +110,40 @@ def login_route():
     if token is None:
         return jsonify({"error": "Falsches Passwort"}), 401
     return jsonify({"token": token})
+
+@app.route("/events", methods=["GET"])
+def getEvents():
+    try:
+        return jsonify(db_methods.get_events())
+    except Exception as e:
+        return jsonify({"error": "Firestore-Fehler", "details": str(e)}), 500
+
+EVENT_NAME_MAX_LENGTH = 100
+
+@app.route("/events", methods=["POST"])
+def addEvent():
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict) or set(data) != {"name", "time"}:
+        return jsonify({"error": "Erwartet genau name und time"}), 400
+
+    name = data["name"]
+    if not isinstance(name, str) or not name.strip() or len(name.strip()) > EVENT_NAME_MAX_LENGTH:
+        return jsonify({"error": "Ungültiger Name"}), 400
+
+    try:
+        time = datetime.fromisoformat(data["time"])
+    except (TypeError, ValueError):
+        return jsonify({"error": "Ungültige Zeit"}), 400
+    if time.tzinfo is None:
+        return jsonify({"error": "Die Zeit braucht eine Zeitzone"}), 400
+    if time <= datetime.now(timezone.utc):
+        return jsonify({"error": "Die Zeit liegt in der Vergangenheit"}), 400
+
+    try:
+        db_methods.add_event(name.strip(), time)
+    except Exception as e:
+        return jsonify({"error": "Firestore-Fehler", "details": str(e)}), 500
+    return jsonify({"status": "ok"}), 201
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=False)
