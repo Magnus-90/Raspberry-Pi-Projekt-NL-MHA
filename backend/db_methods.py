@@ -42,8 +42,15 @@ def get_events():
             "id": doc.id,
             "name": data.get("name"),
             "time": time.isoformat() if hasattr(time, "isoformat") else str(time),
+            "series": bool(data.get("series", False)),
+            "repeat": data.get("repeat", "none"),
         })
     return events
 
-def add_event(name, time):
-    get_db().collection(EVENTS_COLLECTION).add({"name": name, "time": time})
+def add_event(name, time, series=False, repeat="none"):
+    get_db().collection(EVENTS_COLLECTION).add({
+        "name": name,
+        "time": time,
+        "series": series,
+        "repeat": repeat if series else "none",
+    })

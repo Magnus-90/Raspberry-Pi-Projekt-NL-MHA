@@ -2,16 +2,61 @@ import { DatePipe } from '@angular/common';
 import { Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
+type Repeat = 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
 
 interface CountdownEvent {
   id: string;
   name: string;
   time: string;
+  series?: boolean;
+  repeat?: Repeat;
 }
 
 interface EventData {
   name: string;
   time: string;
+  series?: boolean;
+  repeat?: Repeat;
+}
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+// Untergrenze der Periodenlänge, damit der Startindex nie zu hoch geschätzt wird
+const MIN_PERIOD_MS: Record<Exclude<Repeat, 'none'>, number> = {
+  daily: DAY_MS,
+  weekly: 7 * DAY_MS,
+  monthly: 31 * DAY_MS,
+  yearly: 366 * DAY_MS,
+};
+
+// Der k-te Termin der Serie; Monats-/Jahresende wird auf den letzten Tag begrenzt (31. -> 28./30.)
+function occurrenceAt(start: Date, repeat: Exclude<Repeat, 'none'>, k: number): Date {
+  const date = new Date(start);
+  if (repeat === 'daily') {
+    date.setDate(start.getDate() + k);
+  } else if (repeat === 'weekly') {
+    date.setDate(start.getDate() + 7 * k);
+  } else {
+    const months = repeat === 'monthly' ? k : 12 * k;
+    date.setDate(1);
+    date.setMonth(start.getMonth() + months);
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    date.setDate(Math.min(start.getDate(), lastDay));
+  }
+  return date;
+}
+
+function nextOccurrence(event: CountdownEvent, now: number): Date {
+  const start = new Date(event.time);
+  if (!event.series || !event.repeat || event.repeat === 'none' || start.getTime() > now) {
+    return start;
+  }
+  let k = Math.max(0, Math.floor((now - start.getTime()) / MIN_PERIOD_MS[event.repeat]) - 1);
+  let date = occurrenceAt(start, event.repeat, k);
+  while (date.getTime() <= now) {
+    k++;
+    date = occurrenceAt(start, event.repeat, k);
+  }
+  return date;
 }
 
 @Component({
@@ -36,9 +81,15 @@ export class EventCountdown implements OnInit, OnDestroy {
   public showForm = signal(false);
   public formValues = signal<EventData>({ name: '', time: '' });
 
-  upcomingEvents = computed(() =>
-    this.events().filter((event) => new Date(event.time).getTime() > this.now().getTime()),
-  );
+  upcomingEvents = computed(() => {
+    const now = this.now().getTime();
+    return this.events()
+      .map((event) => ({ ...event, time: nextOccurrence(event, now).toISOString() }))
+      .filter((event) => new Date(event.time).getTime() > now)
+      .sort((a, b) => new Date(a.time).getTime() - new Date(b.time).getTime());
+  });
+
+  singleEvents = computed(() => this.upcomingEvents().filter((event) => !event.series));
 
   async getEvents(){
     const response = await fetch(`${this.url}/events`, {
@@ -52,9 +103,8 @@ export class EventCountdown implements OnInit, OnDestroy {
     return;
   }
 
-  getNextEvent() {
-    const now = Date.now();
-    return this.events().find((event) => new Date(event.time).getTime() > now);
+  getNextEvent() : any {
+    return this.upcomingEvents()[0];
   }
 
   showEventForm(){
@@ -81,6 +131,8 @@ export class EventCountdown implements OnInit, OnDestroy {
       body: JSON.stringify({
         name: currentData.name,
         time: new Date(currentData.time).toISOString(),
+        series: !!currentData.series,
+        ...(currentData.series ? { repeat: currentData.repeat ?? 'weekly' } : {}),
       }),
     });
     if (!response.ok) {

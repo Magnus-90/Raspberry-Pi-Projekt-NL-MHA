@@ -11,29 +11,34 @@
     overflow: hidden;
 }
 
+.addEvent {
+    align-self: flex-end;
+}
+
 .nextEvent {
     display: grid;
     place-items: center;
-    padding: 0.6em;
+    padding: 2em;
     border: 1px solid black;
     border-radius: 8px;
     background-color: lightgray;
     text-align: center;
 
     strong {
-        font-size: min(4cqw, 6cqh);
+        font-size: min(6cqw, 8cqh);
     }
 
     p {
         margin: 0.2em 0 0;
-        font-size: min(6cqw, 9cqh);
+        font-size: min(8cqw, 16cqh);
         font-weight: bold;
         font-variant-numeric: tabular-nums;
     }
 }
 
 .upCommingEvents{
-    font-size: min(2.8cqw, 4cqh);
+    font-size: min(3cqw, 4cqh);
+    align-self: flex-start;
 }
 
 hr {
