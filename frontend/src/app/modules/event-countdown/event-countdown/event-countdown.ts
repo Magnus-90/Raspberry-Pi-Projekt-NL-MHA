@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, computed, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
 type Repeat = 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -78,7 +78,6 @@ export class EventCountdown implements OnInit, OnDestroy {
   public hours = signal(0);
   public minutes = signal(0);
   public seconds = signal(0);
-  public showForm = signal(false);
   public formValues = signal<EventData>({ name: '', time: '' });
 
   upcomingEvents = computed(() => {
@@ -90,6 +89,8 @@ export class EventCountdown implements OnInit, OnDestroy {
   });
 
   singleEvents = computed(() => this.upcomingEvents().filter((event) => !event.series));
+
+  private eventDialog = viewChild.required<ElementRef<HTMLDialogElement>>('eventDialog');
 
   async getEvents(){
     const response = await fetch(`${this.url}/events`, {
@@ -107,13 +108,13 @@ export class EventCountdown implements OnInit, OnDestroy {
     return this.upcomingEvents()[0];
   }
 
-  showEventForm(){
-    this.showForm.set(true);
-  }
+showEventForm() {
+  this.eventDialog().nativeElement.showModal();
+}
 
-  hideEventForm(){
-    this.showForm.set(false);
-  }
+hideEventForm() {
+  this.eventDialog().nativeElement.close();
+}
 
   onSubmit(form: NgForm) {
     if (form.valid) {

@@ -21,8 +21,14 @@
     overflow: hidden;
 }
 
-.eventForm{
-    display: grid;
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.eventForm {
+    padding: 1em 1.5em;
+    border: 1px solid black;
+    border-radius: 8px;
 }
 
 .content {
@@ -44,6 +50,14 @@
 
 .addEvent {
     align-self: flex-end;
+    button{
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    button:hover{
+        cursor: pointer;
+    }
 }
 
 .nextEvent {
