@@ -8,6 +8,8 @@ SETTINGS_COLLECTION = "settings"
 SETTINGS_DOC = "general"
 SETTINGS_KEYS = ("weatherlocation", "publictransportlocation")
 
+EVENTS_COLLECTION = "events"
+
 _db = None
 
 def get_db():
@@ -27,3 +29,28 @@ def get_settings():
 
 def update_settings(settings):
     get_db().collection(SETTINGS_COLLECTION).document(SETTINGS_DOC).set(settings, merge=True)
+
+def get_events():
+    docs = get_db().collection(EVENTS_COLLECTION).order_by("time").stream()
+    events = []
+    for doc in docs:
+        data = doc.to_dict()
+        time = data.get("time")
+        if not data.get("name") or time is None:
+            continue
+        events.append({
+            "id": doc.id,
+            "name": data.get("name"),
+            "time": time.isoformat() if hasattr(time, "isoformat") else str(time),
+            "series": bool(data.get("series", False)),
+            "repeat": data.get("repeat", "none"),
+        })
+    return events
+
+def add_event(name, time, series=False, repeat="none"):
+    get_db().collection(EVENTS_COLLECTION).add({
+        "name": name,
+        "time": time,
+        "series": series,
+        "repeat": repeat if series else "none",
+    })

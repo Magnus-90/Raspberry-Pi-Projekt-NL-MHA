@@ -3,6 +3,10 @@
         (dragStarted)="dragStart('time', $event)"
         (dropped)="drop('time', $event)"
         (opened)="open('time')"><app-time /></app-panel>
+    <app-panel class="module-event" title="Event" [style.grid-area]="area('event')"
+        (dragStarted)="dragStart('event', $event)"
+        (dropped)="drop('event', $event)"
+        (opened)="open('event')"><app-event-countdown /></app-panel>
     <app-panel class="module-weather" title="Weather"
         [style.grid-area]="area('weather')"
         (dragStarted)="dragStart('weather', $event)"

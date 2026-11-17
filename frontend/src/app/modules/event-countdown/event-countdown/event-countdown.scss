@@ -1,0 +1,110 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.eventCountdown {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    gap: 0.4em;
+    overflow: hidden;
+}
+
+
+.eventCountdown {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    overflow: hidden;
+}
+
+dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.eventForm {
+    padding: 1em 1.5em;
+    border: 1px solid black;
+    border-radius: 8px;
+}
+
+.content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8em;
+    flex: 1;
+    min-height: 0;
+}
+
+.header{
+    display: flex;
+    align-items: center;
+    font-size: min(3cqw, 4cqh);
+    img{
+        width: min(3cqw, 4cqh);
+    }
+}
+
+.addEvent {
+    align-self: flex-end;
+    button{
+        padding: 10px;
+        border-radius: 8px;
+    }
+
+    button:hover{
+        cursor: pointer;
+    }
+}
+
+.nextEvent {
+    display: grid;
+    place-items: center;
+    border: 1px solid black;
+    border-radius: 8px;
+    background-color: lightgray;
+    text-align: center;
+
+    strong {
+        font-size: min(6cqw, 10cqh);
+    }
+
+    p {
+        margin: 0.2em 0 0;
+        font-size: min(6cqw, 8cqh);
+        font-weight: bold;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+.upCommingEvents{
+    font-size: min(3cqw, 4cqh);
+}
+
+.upCommingEvents strong{
+    display: grid;
+    place-items: center;
+}
+
+.upCommingEvents p{
+    display: grid;
+    place-items: center;
+}
+
+hr {
+    width: 100%;
+    margin: 0;
+    border: none;
+    border-top: 1px solid black;
+}
+
+strong {
+    font-size: min(3.2cqw, 5cqh);
+}
+
+p {
+    margin: 0.2em 0;
+}

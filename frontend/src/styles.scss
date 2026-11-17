@@ -8,7 +8,7 @@ app-panel img {
   -webkit-user-drag: none;
 }
 
-.content > :is(app-time, app-weather, app-public-transport) {
+.content > :is(app-time, app-weather, app-public-transport, app-event-countdown) {
   box-sizing: border-box;
   width: 100vw;
   height: 100vh;
@@ -23,6 +23,10 @@ app-panel img {
 }
 .module-public-transport, .content > app-public-transport {
   view-transition-name: module-public-transport;
+}
+
+.module-event, .content > app-event-countdown {
+  view-transition-name: module-event;
 }
 
 ::view-transition-group(*) {

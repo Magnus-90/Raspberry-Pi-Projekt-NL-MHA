@@ -5,15 +5,16 @@ import { Panel } from '../shared/panel/panel';
 import { WeatherComponent } from '../modules/weather/weather';
 import { TimeConponent } from '../modules/time/time';
 import { PublicTransport } from '../modules/public-transport/public-transport';
+import { EventCountdown } from '../modules/event-countdown/event-countdown/event-countdown';
 
 const STORAGE_KEY = 'dashboard-cells';
 const VERTICAL_KEY = 'dashboard-vertical';
 
 // Felder: 0 = oben links, 1 = oben rechts, 2 = unten links, 3 = unten rechts
-const DEFAULT_CELLS: Record<string, number> = { 'time': 0, 'weather': 2, 'public-transport': 3 };
+const DEFAULT_CELLS: Record<string, number> = { 'time': 0, 'event': 1, 'weather': 2, 'public-transport': 3 };
 
 // Route, auf der das Modul im Vollbild läuft (siehe app.routes.ts)
-const MODULE_ROUTES: Record<string, string> = { 'time': 'clock', 'weather': 'weather', 'public-transport': 'publictransport' };
+const MODULE_ROUTES: Record<string, string> = { 'time': 'clock', 'event': 'event', 'weather': 'weather', 'public-transport': 'publictransport' };
 
 interface Area {
   row: number,
@@ -28,7 +29,8 @@ interface Area {
     Panel,
     WeatherComponent,
     TimeConponent,
-    PublicTransport
+    PublicTransport,
+    EventCountdown
   ],
   templateUrl: './overview.html',
   styleUrl: './overview.scss',
