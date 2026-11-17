@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { DEFAULT_PRIMARY, DEFAULT_SECONDARY, ThemeService } from '../../../services/theme-service';
 
 const TOKEN_KEY = 'admin-token';
 
@@ -19,6 +20,9 @@ export class AdminComponent implements OnInit, OnDestroy {
   private token = signal(sessionStorage.getItem(TOKEN_KEY) ?? "");
   public loggedIn = computed(() => this.token() !== "");
   private timer?: ReturnType<typeof setInterval>;
+  private theme = inject(ThemeService);
+  public primarycolor = signal(DEFAULT_PRIMARY);
+  public secondarycolor = signal(DEFAULT_SECONDARY);
 
   private authHeaders() {
     return {
@@ -58,6 +62,26 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
+  setPrimaryColor(value: string) {
+    this.primarycolor.set(value);
+    this.previewColors();
+  }
+
+  setSecondaryColor(value: string) {
+    this.secondarycolor.set(value);
+    this.previewColors();
+  }
+
+  resetColors() {
+    this.primarycolor.set(DEFAULT_PRIMARY);
+    this.secondarycolor.set(DEFAULT_SECONDARY);
+    this.previewColors();
+  }
+
+  private previewColors() {
+    this.theme.applyColors(this.primarycolor(), this.secondarycolor());
+  }
+
   async getsystemStats() {
     try{
       const response = await fetch(`${this.url}/health`);
@@ -82,6 +106,8 @@ export class AdminComponent implements OnInit, OnDestroy {
         body: JSON.stringify ({
           "weatherlocation": this.weatherlocation(),
           "publictransportlocation": this.publictransportlocation(),
+          "primarycolor": this.primarycolor(),
+          "secondarycolor": this.secondarycolor(),
         })
       }
       )
@@ -154,6 +180,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
     this.publictransportlocation.set(settings.publictransportlocation ?? "")
     this.weatherlocation.set(settings.weatherlocation ?? "")
+    this.primarycolor.set(settings.primarycolor || DEFAULT_PRIMARY)
+    this.secondarycolor.set(settings.secondarycolor || DEFAULT_SECONDARY)
   }
 
   async ngOnInit() {

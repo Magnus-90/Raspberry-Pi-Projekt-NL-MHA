@@ -52,11 +52,15 @@ dialog::backdrop {
     align-self: flex-end;
     button{
         padding: 10px;
+        border: 0;
         border-radius: 8px;
+        background-color: var(--color-primary);
+        color: white;
     }
 
     button:hover{
         cursor: pointer;
+        background-color: var(--color-primary-hover);
     }
 }
 
@@ -65,7 +69,7 @@ dialog::backdrop {
     place-items: center;
     border: 1px solid black;
     border-radius: 8px;
-    background-color: lightgray;
+    background-color: var(--color-secondary-light);
     text-align: center;
 
     strong {

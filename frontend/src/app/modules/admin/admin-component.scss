@@ -22,19 +22,6 @@
     padding: 15px;
     border: 1px solid black;
     border-radius: 8px;
-
-    button{
-        background-color: gray;
-        padding: 10px;
-        border: 0px;
-        border-radius: 8px;
-        color: white;
-
-        &:hover{
-            cursor: pointer;
-            background-color: rgb(97, 97, 97);
-        }
-    }
 }
 
 .konfigurations, .systemstats{
@@ -56,23 +43,20 @@
 
 .konfigurations{
     place-items: center;
-
-    button{
-        background-color: gray;
-        padding: 10px;
-        border: 0px;
-        border-radius: 8px;
-        color: white;
-
-        &:hover{
-            cursor: pointer;
-            background-color: rgb(97, 97, 97);
-        }
-    }
 }
 
 .weatherkonfigurations, .publictransportkonfigurations{
     display: grid;
     gap: 4px;
     width: 100%;
+}
+
+.colorkonfigurations {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 12px;
+    align-items: center;
+    width: 100%;
+
+    button { grid-column: 1 / -1; }
 }
