@@ -1,11 +1,13 @@
 import { Component, input, output } from '@angular/core';
 import { CdkDrag, CdkDragEnd, CdkDragHandle, CdkDragStart, Point } from '@angular/cdk/drag-drop';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-panel',
   imports: [
     CdkDrag,
-    CdkDragHandle
+    CdkDragHandle,
+    MatIconModule,
   ],
   templateUrl: './panel.html',
   styleUrl: './panel.scss',
@@ -15,6 +17,7 @@ export class Panel {
   dragStarted = output<Point>()
   dropped = output<Point>()
   opened = output<void>()
+  closed = output<void>()
 
   private pressedAt: Point = { x: 0, y: 0 }
 
@@ -37,5 +40,11 @@ export class Panel {
     // Der Browser feuert auch nach Ziehen oder Wischen ein click, nur ein Klick ohne Bewegung öffnet das Modul
     const moved = Math.hypot(event.clientX - this.pressedAt.x, event.clientY - this.pressedAt.y)
     if (moved < 5) this.opened.emit()
+  }
+
+  onClose(event: MouseEvent) {
+    // Sonst erreicht der Klick auch .panel und öffnet das Modul im Vollbild
+    event.stopPropagation()
+    this.closed.emit()
   }
 }
