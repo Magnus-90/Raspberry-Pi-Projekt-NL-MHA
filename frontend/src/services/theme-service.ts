@@ -15,6 +15,14 @@ export class ThemeService {
     root.setProperty('--color-secondary', secondary || DEFAULT_SECONDARY);
   }
 
+  applyDarkmode(enabled: boolean) {
+    if (enabled) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+
   async loadColorSettings() {
     try {
       const response = await fetch(`${this.url}/settings`);
@@ -23,6 +31,7 @@ export class ThemeService {
       }
       const data = await response.json();
       this.applyColors(data.primarycolor, data.secondarycolor);
+      this.applyDarkmode(data.darkmode === 'true');
     } catch {
       // Backend nicht erreichbar: die Standardfarben aus styles.scss bleiben aktiv
     }

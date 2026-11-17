@@ -23,6 +23,7 @@ export class AdminComponent implements OnInit, OnDestroy {
   private theme = inject(ThemeService);
   public primarycolor = signal(DEFAULT_PRIMARY);
   public secondarycolor = signal(DEFAULT_SECONDARY);
+  public darkmode = signal(false);
 
   private authHeaders() {
     return {
@@ -78,6 +79,11 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.previewColors();
   }
 
+  setDarkmode(enabled: boolean) {
+    this.darkmode.set(enabled);
+    this.theme.applyDarkmode(enabled);
+  }
+
   private previewColors() {
     this.theme.applyColors(this.primarycolor(), this.secondarycolor());
   }
@@ -108,6 +114,7 @@ export class AdminComponent implements OnInit, OnDestroy {
           "publictransportlocation": this.publictransportlocation(),
           "primarycolor": this.primarycolor(),
           "secondarycolor": this.secondarycolor(),
+          "darkmode": String(this.darkmode()),
         })
       }
       )
@@ -182,6 +189,7 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.weatherlocation.set(settings.weatherlocation ?? "")
     this.primarycolor.set(settings.primarycolor || DEFAULT_PRIMARY)
     this.secondarycolor.set(settings.secondarycolor || DEFAULT_SECONDARY)
+    this.darkmode.set(settings.darkmode === "true")
   }
 
   async ngOnInit() {

@@ -41,6 +41,10 @@
             <input #secondary id="secondarycolor" [value]="secondarycolor()" (input)="setSecondaryColor(secondary.value)" type="color">
             <button type="button" class="btn btn-secondary" (click)="resetColors()">Farben Zurücksetzen</button>
         </div>
+        <div class="darkmodekonfigurations">
+            <label for="darkmode">Darkmode Aktivieren?</label>
+            <input #darkmodeToggle id="darkmode" type="checkbox" [checked]="darkmode()" (change)="setDarkmode(darkmodeToggle.checked)">
+        </div>
         @if (error()) {
             <p class="error">{{ error() }}</p>
         }
