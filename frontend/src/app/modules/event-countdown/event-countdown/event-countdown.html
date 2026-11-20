@@ -2,9 +2,11 @@
     <img src="./icons/calendar-days-solid-full.svg" alt="" draggable="false">
     <p>Events</p>
 </div>
-<div class="addEvent">
-    <button (click)="showEventForm()">Event Hinzufügen</button>
-</div>
+@if (detail()) {
+    <div class="addEvent">
+        <button (click)="showEventForm()">Event Hinzufügen</button>
+    </div>
+}
 <div class="eventCountdown">
     <dialog #eventDialog class="eventForm" (click)="$event.stopPropagation()">
         <p>Event Hinzufügen:</p>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, signal } from '@angular/core';
+import { booleanAttribute, Component, input, OnDestroy, signal } from '@angular/core';
 
 @Component({
   selector: 'app-time',
@@ -9,6 +9,7 @@ import { Component, OnDestroy, signal } from '@angular/core';
 export class TimeConponent implements OnDestroy {
   time = signal(new Date().toLocaleTimeString());
   private id = setInterval(() => this.time.set(new Date().toLocaleTimeString()), 1000);
+  detail = input(false, { transform: booleanAttribute });
 
   getCurrentDate(){
     const date = new Date().toLocaleDateString('de-CH',{

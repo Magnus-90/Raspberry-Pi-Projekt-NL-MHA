@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, ElementRef, computed, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, computed, OnDestroy, OnInit, signal, viewChild, input, booleanAttribute } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
 type Repeat = 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
@@ -79,6 +79,7 @@ export class EventCountdown implements OnInit, OnDestroy {
   public minutes = signal(0);
   public seconds = signal(0);
   public formValues = signal<EventData>({ name: '', time: '' });
+  detail = input(false, { transform: booleanAttribute });
 
   upcomingEvents = computed(() => {
     const now = this.now().getTime();
