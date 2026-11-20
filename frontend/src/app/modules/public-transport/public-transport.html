@@ -1,19 +1,58 @@
-<div class="publictransport">
-  <p class="title">Abfahrten ab: {{ publictransportdata()?.station?.name }}</p>
-  <div class="items">
-    <div class="header">
-        <p>Linie</p>
-        <p>Abfahrt</p>
-        <p>Infomationen</p>
-    </div>
-    @for (item of publictransportdata()?.stationboard ?? []; track $index) {
-      <div class="item">
-        <p class="text">{{ item.category }} {{ item.number }} nach {{ item.to }}</p>
-        <p class="text">Abfahrt: {{ item.stop.departure | date: 'HH:mm' }}</p>
-        @if (item.stop.delay > 0) {
-          <p class="delay text">Verspätung: {{ "+" + item.stop.delay + " " + 'Minuten' }}</p>
-        }
+@if (detail()) {
+  <div class="publictransport detail">
+    <p class="title">Abfahrten ab: {{ publictransportdata()?.station?.name }}</p>
+    <div class="items">
+      <div class="header">
+          <p>Linie</p>
+          <p>Ziel</p>
+          <p>Gleis</p>
+          <p>Abfahrt</p>
+          <p>Info</p>
+          <p>Auslastung</p>
       </div>
-    }
+      @for (item of publictransportdata()?.stationboard ?? []; track $index) {
+        <div class="item">
+          <p class="text"><img class="icon" src="public-transport-icons/train-right.svg" alt=""> {{ item.category }} {{ item.number }}</p>
+          <p class="text">{{ item.to }}</p>
+          <p class="text">{{ item.stop.prognosis?.platform ?? item.stop.platform ?? '–' }}</p>
+          <p class="text">{{ item.stop.departure | date: 'HH:mm' }}</p>
+          <p class="text">
+            @if (item.stop.delay > 0) {
+              <span class="delay">+{{ item.stop.delay }} Min.</span>
+            }
+            @if (item.stop.prognosis?.platform && item.stop.prognosis?.platform !== item.stop.platform) {
+              <span class="delay">Gleis neu</span>
+            }
+          </p>
+          @if (item.stop.prognosis?.capacity2nd >= 2) {
+            <p class="text">Hoch</p>
+          } @else if (item.stop.prognosis?.capacity2nd == 1) {
+            <p class="text">Niedrig</p>
+          } @else {
+            <p class="text">{{ item.stop.prognosis?.capacity2nd ?? '–' }}</p>
+          }
+        </div>
+      }
+    </div>
   </div>
-</div>
+} @else {
+  <div class="publictransport">
+    <p class="title">Abfahrten ab: {{ publictransportdata()?.station?.name }}</p>
+    <div class="items">
+      <div class="header">
+          <p>Linie</p>
+          <p>Abfahrt</p>
+          <p>Infomationen</p>
+      </div>
+      @for (item of publictransportdata()?.stationboard ?? []; track $index) {
+        <div class="item">
+          <p class="text">{{ item.category }} {{ item.number }} nach {{ item.to }}</p>
+          <p class="text">Abfahrt: {{ item.stop.departure | date: 'HH:mm' }}</p>
+          @if (item.stop.delay > 0) {
+            <p class="delay text">Verspätung: {{ "+" + item.stop.delay + " " + 'Minuten' }}</p>
+          }
+        </div>
+      }
+    </div>
+  </div>
+}

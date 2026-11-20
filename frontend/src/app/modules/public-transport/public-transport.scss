@@ -49,3 +49,39 @@
 .delay{
     color: red;
 }
+
+.detail {
+    .header, .item {
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+    }
+
+    .text, .header {
+        font-size: min(2cqw, 3.5cqh);
+    }
+
+    .header p, .item p {
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .header p:nth-child(2), .item p:nth-child(2) {
+        justify-self: start;
+    }
+
+    .item {
+        border-top: 1px solid rgba(0, 0, 0, 0.15);
+    }
+}
+
+.icon{
+    width: min(2.8cqw, 4cqh);
+}
