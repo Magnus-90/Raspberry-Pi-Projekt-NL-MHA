@@ -15,6 +15,9 @@
     border-radius: 12px;
 
     .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 6px 12px;
         background-color: #eee;
         border-bottom: 1px solid #999;
@@ -32,6 +35,20 @@
     }
     .panel-header:active {
         cursor: grabbing;
+    }
+
+    .close {
+        display: flex;
+        padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+
+        mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+        }
     }
 }
 
