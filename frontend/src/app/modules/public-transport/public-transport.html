@@ -12,7 +12,12 @@
       </div>
       @for (item of publictransportdata()?.stationboard ?? []; track $index) {
         <div class="item">
-          <p class="text"><img class="icon" src="public-transport-icons/train-right.svg" alt=""> {{ item.category }} {{ item.number }}</p>
+          @if (item.categoryCode == 1 || item.categoryCode == 2 || item.categoryCode == 3 || item.categoryCode == 4 || item.categoryCode == 5) {
+            <p class="text"><img class="icon" src="public-transport-icons/train-right.svg" alt=""> {{ item.category }} {{ item.number }}</p>
+          } @else if (item.categoryCode == 6) {
+            <p class="text"><img class="icon" src="public-transport-icons/bus-right.svg" alt=""> {{ item.category }} {{ item.number }}</p>
+          }
+          
           <p class="text">{{ item.to }}</p>
           <p class="text">{{ item.stop.prognosis?.platform ?? item.stop.platform ?? '–' }}</p>
           <p class="text">{{ item.stop.departure | date: 'HH:mm' }}</p>
