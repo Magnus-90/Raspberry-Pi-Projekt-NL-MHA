@@ -27,7 +27,7 @@ dialog::backdrop {
 
 .eventForm {
     padding: 1em 1.5em;
-    border: 1px solid black;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
 }
 
@@ -52,20 +52,24 @@ dialog::backdrop {
     align-self: flex-end;
     button{
         padding: 10px;
+        border: 0;
         border-radius: 8px;
+        background-color: var(--color-primary);
+        color: white;
     }
 
     button:hover{
         cursor: pointer;
+        background-color: var(--color-primary-hover);
     }
 }
 
 .nextEvent {
     display: grid;
     place-items: center;
-    border: 1px solid black;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
-    background-color: lightgray;
+    background-color: var(--color-secondary-light);
     text-align: center;
 
     strong {
@@ -98,7 +102,7 @@ hr {
     width: 100%;
     margin: 0;
     border: none;
-    border-top: 1px solid black;
+    border-top: 1px solid var(--color-border);
 }
 
 strong {

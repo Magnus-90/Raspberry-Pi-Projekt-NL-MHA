@@ -5,12 +5,14 @@ import requests
 import db_methods
 import auth
 from datetime import datetime, timezone
+import re
 
 app = Flask(__name__)
 CORS(app)
 
 # The helper runs on the Pi (not in the container), reachable via host.docker.internal
 HELPER_URL = "http://host.docker.internal:5001"
+HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
 
 def call_helper(path, started_message):
     try:
@@ -55,6 +57,10 @@ def updateSettingsRaspberryPi():
     for key, value in data.items():
         if not isinstance(value, str) or not value.strip() or len(value.strip()) > SETTINGS_MAX_LENGTH:
             return jsonify({"error": f"Ungültiger Wert für {key}"}), 400
+        if key in db_methods.COLOR_KEYS and not HEX_COLOR.match(value.strip()):
+            return jsonify({"error": f"Ungültige Farbe für {key}"}), 400
+        if key == "darkmode" and value.strip() not in db_methods.DARKMODE_VALUES:
+            return jsonify({"error": "Ungültiger Wert für darkmode"}), 400
         settings[key] = value.strip()
 
     try:

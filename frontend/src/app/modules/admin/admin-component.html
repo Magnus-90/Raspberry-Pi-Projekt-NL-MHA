@@ -1,6 +1,29 @@
 <div class="title">
     <strong>Admin Panel</strong>
 </div>
+<dialog #eventDialog class="eventForm" (click)="$event.stopPropagation()">
+        <div class="layoutpreview" #grid>
+            <app-panel class="module-time" title="Time" [style.grid-area]="area('time')"
+                (dragStarted)="dragStart('time', $event)"
+                (dropped)="drop('time', $event)"
+                ><app-time /></app-panel>
+            <app-panel class="module-event" title="Event" [style.grid-area]="area('event')"
+                (dragStarted)="dragStart('event', $event)"
+                (dropped)="drop('event', $event)"
+                ><app-event-countdown /></app-panel>
+            <app-panel class="module-weather" title="Weather"
+                [style.grid-area]="area('weather')"
+                (dragStarted)="dragStart('weather', $event)"
+                (dropped)="drop('weather', $event)"
+                ><app-weather /></app-panel>
+            <app-panel class="module-public-transport" title="Public Transport"
+                [style.grid-area]="area('public-transport')"
+                (dragStarted)="dragStart('public-transport', $event)"
+                (dropped)="drop('public-transport', $event)"
+                ><app-public-transport /></app-panel>
+        </div>
+        <button type="button" class="btn btn-secondary" (click)="hideDashboardEdit()">Schliessen</button>
+    </dialog>
 @if (!loggedIn()) {
     <form class="login" (submit)="login($event)">
         <label for="password">Passwort:</label>
@@ -8,7 +31,7 @@
         @if (error()) {
             <p class="error">{{ error() }}</p>
         }
-        <button type="submit">Anmelden</button>
+        <button type="submit" class="btn btn-primary">Anmelden</button>
     </form>
 } @else {
 <div class="admincomponent">
@@ -34,16 +57,30 @@
             <label for="publictransportlocation">ÖPNV Standort:</label>
             <input id="publictransportlocation" type="text" [value]="publictransportlocation()" (input)="publictransportlocation.set($any($event.target).value)">
         </div>
+        <div class="colorkonfigurations">
+            <label for="primarycolor">Primärfarbe:</label>
+            <input #primary id="primarycolor" [value]="primarycolor()" (input)="setPrimaryColor(primary.value)" type="color">
+            <label for="secondarycolor">Sekundärfarbe:</label>
+            <input #secondary id="secondarycolor" [value]="secondarycolor()" (input)="setSecondaryColor(secondary.value)" type="color">
+            <button type="button" class="btn btn-secondary" (click)="resetColors()">Farben Zurücksetzen</button>
+        </div>
+        <div class="darkmodekonfigurations">
+            <label for="darkmode">Darkmode Aktivieren?</label>
+            <input #darkmodeToggle id="darkmode" type="checkbox" [checked]="darkmode()" (change)="setDarkmode(darkmodeToggle.checked)">
+        </div>
+        <div class="dashboardkonfigurations">
+            <button class="btn btn-primary" (click)="showDashboardEdit()">Dashboard Anordnung bearbeiten</button>
+        </div>
         @if (error()) {
             <p class="error">{{ error() }}</p>
         }
         @if (info()) {
             <p class="info">{{ info() }}</p>
         }
-        <button (click)="saveSettings()">Speichern</button>
-        <button (click)="updatePi()">Raspberry Pi Display Updaten</button>
-        <button (click)="restartPi()">Raspberry Pi Neustarten</button>
-        <button (click)="logout()">Logout</button>
+        <button class="btn btn-primary" (click)="saveSettings()">Speichern</button>
+        <button class="btn btn-secondary" (click)="updatePi()">Raspberry Pi Display Updaten</button>
+        <button class="btn btn-secondary" (click)="restartPi()">Raspberry Pi Neustarten</button>
+        <button class="btn btn-secondary" (click)="logout()">Logout</button>
     </div>
 </div>
 }

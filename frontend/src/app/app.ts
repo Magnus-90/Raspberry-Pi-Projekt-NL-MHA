@@ -1,5 +1,6 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { ThemeService } from '../services/theme-service';
 
 @Component({
   selector: 'app-root',
@@ -11,6 +12,7 @@ export class App implements OnInit, OnDestroy {
   protected readonly title = signal('frontend');
   private versionTimer?: ReturnType<typeof setInterval>;
   private currentIndex?: string;
+  theme = inject(ThemeService);
 
   private async fetchIndex(): Promise<string | undefined> {
     try {
@@ -23,6 +25,7 @@ export class App implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.currentIndex = await this.fetchIndex();
+    await this.theme.loadColorSettings();
     this.versionTimer = setInterval(async () => {
       const latest = await this.fetchIndex();
       if (!latest){
