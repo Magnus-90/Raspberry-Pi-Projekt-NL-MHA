@@ -49,13 +49,16 @@ def updateSettingsRaspberryPi():
     if not isinstance(data, dict) or not data:
         return jsonify({"error": "Kein gültiges JSON"}), 400
 
-    unknown_keys = set(data) - set(db_methods.SETTINGS_KEYS)
+    unknown_keys = set(data) - set(db_methods.ALL_KEYS)
     if unknown_keys:
         return jsonify({"error": "Unbekannte Parameter", "details": sorted(unknown_keys)}), 400
 
     settings = {}
     for key, value in data.items():
-        if not isinstance(value, str) or not value.strip() or len(value.strip()) > SETTINGS_MAX_LENGTH:
+        if not isinstance(value, str) or len(value.strip()) > SETTINGS_MAX_LENGTH:
+            return jsonify({"error": f"Ungültiger Wert für {key}"}), 400
+        # Leer ist nur bei optionalen Einstellungen erlaubt
+        if not value.strip() and key not in db_methods.OPTIONAL_KEYS:
             return jsonify({"error": f"Ungültiger Wert für {key}"}), 400
         if key in db_methods.COLOR_KEYS and not HEX_COLOR.match(value.strip()):
             return jsonify({"error": f"Ungültige Farbe für {key}"}), 400
