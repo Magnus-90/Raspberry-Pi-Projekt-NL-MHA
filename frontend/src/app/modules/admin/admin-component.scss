@@ -37,7 +37,7 @@
     }
 }
 
-.konfigurations, .systemstats{
+.systemstats{
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
@@ -54,10 +54,28 @@
     }
 }
 
-.konfigurations{
-    place-items: center;
+.settings{
+    display: grid;
+    grid-template-areas:
+        "title"
+        "module-settings"
+        "buttons";
+    gap: 12px;
+    padding: 15px;
+    border: 1px solid black;
+    border-radius: 8px;
+    align-items: stretch;
+
+    .buttons{
+        grid-area: buttons;
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
 
     button{
+        min-width: 200px;
         background-color: gray;
         padding: 10px;
         border: 0px;
@@ -69,10 +87,30 @@
             background-color: rgb(97, 97, 97);
         }
     }
+
+    .title {
+        grid-area: title;
+    }
+
+    .konfiguration{
+        display: grid;
+        grid-area: module-settings;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        width: 100%;
+    }
 }
 
-.weatherkonfigurations, .publictransportkonfigurations{
+
+.weatherkonfigurations, .publictransportkonfigurations, .general{
     display: grid;
     gap: 4px;
     width: 100%;
+}
+
+// Ruhemodus: Von- und Bis-Feld nebeneinander, gleich breit
+.time-range{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
 }

@@ -1,4 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+// Material-Theme: setzt die Farb-/Schrift-Variablen, ohne die z.B. das Timepicker-Popup durchsichtig ist
+html {
+  @include mat.theme((
+    color: (theme-type: light, primary: mat.$azure-palette),
+    typography: 'Segoe UI',
+    density: 0,
+  ));
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;

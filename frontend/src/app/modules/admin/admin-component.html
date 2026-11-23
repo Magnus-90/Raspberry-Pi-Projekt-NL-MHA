@@ -24,26 +24,53 @@
             <p>Aktuell sind keine Daten verfügbar</p>
         }
     </div>
-    <div class="konfigurations">
-        <strong>Einstellungen</strong>
-        <div class="weatherkonfigurations">
-            <label for="weatherlocation">Wetter Standort:</label>
-            <input id="weatherlocation" type="text" [value]="weatherlocation()" (input)="weatherlocation.set($any($event.target).value)">
+    <div class="settings">
+        <strong class="title">Einstellungen</strong>
+        <div class="konfiguration">
+            <div class="general-settings">
+                <strong>Allgemeine Einstellungen</strong>
+                <br>
+                <div class="general">
+                    <span>Ruhemodus Zeiten</span>
+                    <div class="time-range">
+                        <mat-form-field>
+                            <mat-label>Von</mat-label>
+                            <input matInput [matTimepicker]="sleepFromPicker" [value]="sleepFrom()" (valueChange)="sleepFrom.set($event)">
+                            <mat-timepicker-toggle matIconSuffix [for]="sleepFromPicker"/><mat-timepicker #sleepFromPicker/>
+                        </mat-form-field>
+                        <mat-form-field>
+                            <mat-label>Bis</mat-label>
+                            <input matInput [matTimepicker]="sleepToPicker" [value]="sleepTo()" (valueChange)="sleepTo.set($event)">
+                            <mat-timepicker-toggle matIconSuffix [for]="sleepToPicker"/><mat-timepicker #sleepToPicker/>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="module-settings">
+                <strong>Moduleinstellungen</strong>
+                <br>
+                <div class="weatherkonfigurations">
+                    <label for="weatherlocation">Wetter Standort</label>
+                    <input id="weatherlocation" type="text" [value]="weatherlocation()" (input)="weatherlocation.set($any($event.target).value)">
+                </div>
+                <div class="publictransportkonfigurations">
+                    <label for="publictransportlocation">ÖPNV Standort</label>
+                    <input id="publictransportlocation" type="text" [value]="publictransportlocation()" (input)="publictransportlocation.set($any($event.target).value)">
+                </div>
+            </div>
+            @if (error()) {
+                <p class="error">{{ error() }}</p>
+            }
+            @if (info()) {
+                <p class="info">{{ info() }}</p>
+            }
         </div>
-        <div class="publictransportkonfigurations">
-            <label for="publictransportlocation">ÖPNV Standort:</label>
-            <input id="publictransportlocation" type="text" [value]="publictransportlocation()" (input)="publictransportlocation.set($any($event.target).value)">
+        <div class="buttons">
+            <button (click)="saveSettings()">Speichern</button>
+            <button (click)="updatePi()">Raspberry Pi Display Updaten</button>
+            <button (click)="restartPi()">Raspberry Pi Neustarten</button>
+            <button (click)="logout()">Logout</button>
         </div>
-        @if (error()) {
-            <p class="error">{{ error() }}</p>
-        }
-        @if (info()) {
-            <p class="info">{{ info() }}</p>
-        }
-        <button (click)="saveSettings()">Speichern</button>
-        <button (click)="updatePi()">Raspberry Pi Display Updaten</button>
-        <button (click)="restartPi()">Raspberry Pi Neustarten</button>
-        <button (click)="logout()">Logout</button>
     </div>
 </div>
 }

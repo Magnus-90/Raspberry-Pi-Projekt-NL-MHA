@@ -5,6 +5,7 @@ import requests
 import db_methods
 import auth
 from datetime import datetime, timezone
+import re
 
 app = Flask(__name__)
 CORS(app)
@@ -32,6 +33,7 @@ def restartRaspberryPi():
     return call_helper("restart", "neustart gestartet")
 
 SETTINGS_MAX_LENGTH = 100
+TIME_PATTERN = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 
 @app.route("/settings", methods=["GET"])
 def getSettingsRaspberryPi():
@@ -55,6 +57,8 @@ def updateSettingsRaspberryPi():
     for key, value in data.items():
         if not isinstance(value, str) or not value.strip() or len(value.strip()) > SETTINGS_MAX_LENGTH:
             return jsonify({"error": f"Ungültiger Wert für {key}"}), 400
+        if key in db_methods.TIME_KEYS and not TIME_PATTERN.match(value.strip()):
+            return jsonify({"error": f"Ungültige Uhrzeit für {key}, erwartet HH:MM"}), 400
         settings[key] = value.strip()
 
     try:

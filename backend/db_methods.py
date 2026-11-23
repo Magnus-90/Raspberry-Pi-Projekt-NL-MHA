@@ -6,7 +6,9 @@ KEY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "db", "raspi
 
 SETTINGS_COLLECTION = "settings"
 SETTINGS_DOC = "general"
-SETTINGS_KEYS = ("weatherlocation", "publictransportlocation")
+SETTINGS_KEYS = ("weatherlocation", "publictransportlocation", "sleepfrom", "sleepto")
+# Ruhemodus von/bis, gespeichert als "HH:MM"
+TIME_KEYS = ("sleepfrom", "sleepto")
 
 EVENTS_COLLECTION = "events"
 
