@@ -1,0 +1,5 @@
+<div class="notifications">
+    @for (n of notifications(); track n.id) {
+        <button [class]="'notification ' + n.severity" (click)="dismiss(n.id)">{{ n.text }}</button>
+    }
+</div>

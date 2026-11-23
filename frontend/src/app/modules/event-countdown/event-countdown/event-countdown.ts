@@ -2,9 +2,9 @@ import { DatePipe } from '@angular/common';
 import { Component, ElementRef, computed, OnDestroy, OnInit, signal, viewChild } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 
-type Repeat = 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
+export type Repeat = 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
 
-interface CountdownEvent {
+export interface CountdownEvent {
   id: string;
   name: string;
   time: string;
@@ -45,7 +45,7 @@ function occurrenceAt(start: Date, repeat: Exclude<Repeat, 'none'>, k: number): 
   return date;
 }
 
-function nextOccurrence(event: CountdownEvent, now: number): Date {
+export function nextOccurrence(event: CountdownEvent, now: number): Date {
   const start = new Date(event.time);
   if (!event.series || !event.repeat || event.repeat === 'none' || start.getTime() > now) {
     return start;

@@ -1,10 +1,11 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeService } from '../services/theme-service';
+import { GlobalNotifications } from './global-notifications/global-notifications';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, GlobalNotifications],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
