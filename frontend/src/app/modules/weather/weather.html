@@ -22,11 +22,11 @@
       @if (detail()) {
         <div class="sunrise">
           <img class="smallIcons" src="icons/sunrise.svg" alt="" />
-          <p class="text">Sonnenaufgang: {{ weather.daily.sunrise | date:'HH:mm' }}</p>
+          <p class="text">Sonnenaufgang: {{ weather.daily.sunrise[0] | date:'HH:mm' }}</p>
         </div>
         <div class="sunset">
           <img class="smallIcons" src="icons/sunset.svg" alt="" />
-          <p class="text">Sonnenuntergang: {{ weather.daily.sunset | date:'HH:mm'}}</p>
+          <p class="text">Sonnenuntergang: {{ weather.daily.sunset[0] | date:'HH:mm' }}</p>
         </div>
       }
     </div>

@@ -1,11 +1,11 @@
-@if (detail()) {
-  <div class="timecomponent detail">
-    <div class="time">
-      <p>{{ time() }}</p>
-    </div>
-    <div class="date">
-      <p>{{ getCurrentDate() }}</p>
-    </div>
+<div class="timecomponent" [class.detail]="detail()">
+  <div class="time">
+    <p>{{ time() }}</p>
+  </div>
+  <div class="date">
+    <p>{{ getCurrentDate() }}</p>
+  </div>
+  @if (detail()) {
     <div class="timezone">
       <p>Zeitzone: {{ currentTimeZone() }}</p>
     </div>
@@ -23,14 +23,5 @@
     <div class="calendarWeek">
       <p>KW: {{ calendarWeek() }}</p>
     </div>
-  </div>
-} @else {
-  <div class="timecomponent">
-    <div class="time">
-      <p>{{ time() }}</p>
-    </div>
-    <div class="date">
-      <p>{{ getCurrentDate() }}</p>
-    </div>
-  </div>
-}
+  }
+</div>

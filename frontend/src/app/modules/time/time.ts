@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { booleanAttribute, Component, input, OnDestroy, signal } from '@angular/core';
 
 @Component({
@@ -9,7 +8,16 @@ import { booleanAttribute, Component, input, OnDestroy, signal } from '@angular/
 })
 export class TimeConponent implements OnDestroy {
   time = signal(new Date().toLocaleTimeString());
-  private id = setInterval(() => this.time.set(new Date().toLocaleTimeString()), 1000);
+  private id = setInterval(() => {
+    const now = new Date();
+    this.time.set(now.toLocaleTimeString());
+    this.dayProgress.set(this.getDayProgress(now));
+    this.calendarWeek.set(this.getCalendarWeek(now));
+    const sw = this.nextTimeSwitchDate();
+    if (sw && sw.date <= now) {
+      this.nextTimeSwitchDate.set(this.findNextTimeSwitch(now));
+    }
+  }, 1000);
   detail = input(false, { transform: booleanAttribute });
   public calendarWeek = signal(this.getCalendarWeek(new Date));
   public currentTimeZone = signal(Intl.DateTimeFormat().resolvedOptions().timeZone);
