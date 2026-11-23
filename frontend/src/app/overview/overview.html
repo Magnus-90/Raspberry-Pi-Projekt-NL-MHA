@@ -1,20 +1,43 @@
 <div class="dashboard" #dashboard (selectstart)="$event.preventDefault()">
+    @if (visible('time')) {
     <app-panel class="module-time" title="Time" [style.grid-area]="area('time')"
         (dragStarted)="dragStart('time', $event)"
         (dropped)="drop('time', $event)"
-        (opened)="open('time')"><app-time /></app-panel>
+        (opened)="open('time')"
+        (closed)="hide('time')"><app-time /></app-panel>
+    }
+    @if (visible('event')) {
     <app-panel class="module-event" title="Event" [style.grid-area]="area('event')"
         (dragStarted)="dragStart('event', $event)"
         (dropped)="drop('event', $event)"
-        (opened)="open('event')"><app-event-countdown /></app-panel>
+        (opened)="open('event')"
+        (closed)="hide('event')"><app-event-countdown /></app-panel>
+    }
+    @if (visible('weather')) {
     <app-panel class="module-weather" title="Weather"
         [style.grid-area]="area('weather')"
         (dragStarted)="dragStart('weather', $event)"
         (dropped)="drop('weather', $event)"
-        (opened)="open('weather')"><app-weather /></app-panel>
+        (opened)="open('weather')"
+        (closed)="hide('weather')"><app-weather /></app-panel>
+    }
+    @if (visible('public-transport')) {
     <app-panel class="module-public-transport" title="Public Transport"
         [style.grid-area]="area('public-transport')"
         (dragStarted)="dragStart('public-transport', $event)"
         (dropped)="drop('public-transport', $event)"
-        (opened)="open('public-transport')"><app-public-transport /></app-panel>
+        (opened)="open('public-transport')"
+        (closed)="hide('public-transport')"><app-public-transport /></app-panel>
+    }
 </div>
+
+@if (hidden().length) {
+<button class="add-module" title="Modul einblenden" [matMenuTriggerFor]="moduleMenu">
+    <mat-icon>add</mat-icon>
+</button>
+<mat-menu #moduleMenu="matMenu">
+    @for (id of hidden(); track id) {
+    <button mat-menu-item (click)="show(id)">{{ titles[id] }}</button>
+    }
+</mat-menu>
+}
