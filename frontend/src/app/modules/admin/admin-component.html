@@ -8,7 +8,7 @@
         @if (error()) {
             <p class="error">{{ error() }}</p>
         }
-        <button type="submit">Anmelden</button>
+        <button type="submit" class="btn btn-primary">Anmelden</button>
     </form>
 } @else {
 <div class="admincomponent">
@@ -45,6 +45,17 @@
                         </mat-form-field>
                     </div>
                 </div>
+                <div class="colorconfigurations">
+                    <label for="primarycolor">Primärfarbe:</label>
+                    <input #primary id="primarycolor" [value]="primarycolor()" (input)="setPrimaryColor(primary.value)" type="color">
+                    <label for="secondarycolor">Sekundärfarbe:</label>
+                    <input #secondary id="secondarycolor" [value]="secondarycolor()" (input)="setSecondaryColor(secondary.value)" type="color">
+                    <button type="button" class="btn btn-secondary" (click)="resetColors()">Farben Zurücksetzen</button>
+                </div>
+                <div class="darkmodekonfigurations">
+                    <label for="darkmode">Darkmode Aktivieren?</label>
+                    <input #darkmodeToggle id="darkmode" type="checkbox" [checked]="darkmode()" (change)="setDarkmode(darkmodeToggle.checked)">
+                </div>
             </div>
             <div class="module-settings">
                 <strong>Moduleinstellungen</strong>
@@ -66,10 +77,10 @@
             }
         </div>
         <div class="buttons">
-            <button (click)="saveSettings()">Speichern</button>
-            <button (click)="updatePi()">Raspberry Pi Display Updaten</button>
-            <button (click)="restartPi()">Raspberry Pi Neustarten</button>
-            <button (click)="logout()">Logout</button>
+            <button class="btn btn-primary" (click)="saveSettings()">Speichern</button>
+            <button class="btn btn-secondary" (click)="updatePi()">Raspberry Pi Display Updaten</button>
+            <button class="btn btn-secondary" (click)="restartPi()">Raspberry Pi Neustarten</button>
+            <button class="btn btn-secondary" (click)="logout()">Logout</button>
         </div>
     </div>
 </div>

@@ -1,8 +1,11 @@
-import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
 import { MatTimepickerModule } from '@angular/material/timepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { DEFAULT_PRIMARY, DEFAULT_SECONDARY, ThemeService } from '../../../services/theme-service';
+import { DashboardLayout } from '../../../services/dashboard-layout';
+import { Point } from '@angular/cdk/drag-drop';
 
 const TOKEN_KEY = 'admin-token';
 
@@ -41,6 +44,10 @@ export class AdminComponent implements OnInit, OnDestroy {
   private token = signal(sessionStorage.getItem(TOKEN_KEY) ?? '');
   public loggedIn = computed(() => this.token() !== '');
   private timer?: ReturnType<typeof setInterval>;
+  private theme = inject(ThemeService);
+  public primarycolor = signal(DEFAULT_PRIMARY);
+  public secondarycolor = signal(DEFAULT_SECONDARY);
+  public darkmode = signal(false);
 
   private authHeaders() {
     return {
@@ -84,6 +91,31 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
+  setPrimaryColor(value: string) {
+    this.primarycolor.set(value);
+    this.previewColors();
+  }
+
+  setSecondaryColor(value: string) {
+    this.secondarycolor.set(value);
+    this.previewColors();
+  }
+
+  resetColors() {
+    this.primarycolor.set(DEFAULT_PRIMARY);
+    this.secondarycolor.set(DEFAULT_SECONDARY);
+    this.previewColors();
+  }
+
+  setDarkmode(enabled: boolean) {
+    this.darkmode.set(enabled);
+    this.theme.applyDarkmode(enabled);
+  }
+
+  private previewColors() {
+    this.theme.applyColors(this.primarycolor(), this.secondarycolor());
+  }
+
   async getsystemStats() {
     try {
       const response = await fetch(`${this.url}/health`);
@@ -99,25 +131,23 @@ export class AdminComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Nur ausgefüllte Felder mitschicken: das Backend lehnt leere Werte ab
-  private settingsBody() {
+  async saveSettings() {
     const from = this.sleepFrom();
     const to = this.sleepTo();
-    const values: Record<string, string> = {
-      weatherlocation: this.weatherlocation().trim(),
-      publictransportlocation: this.publictransportlocation().trim(),
-      sleepfrom: from ? toTimeString(from) : '',
-      sleepto: to ? toTimeString(to) : '',
-    };
-    return Object.fromEntries(Object.entries(values).filter(([, value]) => value !== ''));
-  }
-
-  async saveSettings() {
     try {
       const respone = await fetch(`${this.url}/settings`, {
         method: 'POST',
         headers: this.authHeaders(),
-        body: JSON.stringify(this.settingsBody()),
+        body: JSON.stringify({
+          weatherlocation: this.weatherlocation(),
+          publictransportlocation: this.publictransportlocation(),
+          primarycolor: this.primarycolor(),
+          secondarycolor: this.secondarycolor(),
+          darkmode: String(this.darkmode()),
+          // Leer schaltet den Ruhemodus aus
+          sleepfrom: from ? toTimeString(from) : '',
+          sleepto: to ? toTimeString(to) : '',
+        }),
       });
       if (respone.status === 401) {
         this.logout('Sitzung abgelaufen, bitte neu anmelden');
@@ -194,6 +224,9 @@ export class AdminComponent implements OnInit, OnDestroy {
     this.weatherlocation.set(settings.weatherlocation ?? '');
     this.sleepFrom.set(fromTimeString(settings.sleepfrom ?? ''));
     this.sleepTo.set(fromTimeString(settings.sleepto ?? ''));
+    this.primarycolor.set(settings.primarycolor || DEFAULT_PRIMARY);
+    this.secondarycolor.set(settings.secondarycolor || DEFAULT_SECONDARY);
+    this.darkmode.set(settings.darkmode === 'true');
   }
 
   async ngOnInit() {

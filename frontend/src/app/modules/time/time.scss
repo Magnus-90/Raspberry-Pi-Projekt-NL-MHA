@@ -23,7 +23,6 @@
     place-items: center;
     min-width: 0;
     min-height: 0;
-    background-color: black;
     border-radius: 8px;
     // Jede Box ist selbst ein Container, damit die Schrift genau in sie passt
     container-type: size;
@@ -34,6 +33,14 @@
         color: white;
         text-align: center;
     }
+}
+
+.time{
+    background-color: var(--color-primary);
+}
+
+.date{
+    background-color: var(--color-primary);
 }
 
 .time p{

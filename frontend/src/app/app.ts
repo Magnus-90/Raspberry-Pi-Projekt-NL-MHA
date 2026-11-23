@@ -1,5 +1,6 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
+import { ThemeService } from '../services/theme-service';
 
 // on = normal, dim = Stand-by (dunkler, Berührung weckt), sleep = Ruhemodus (aus, nur die Uhrzeit weckt)
 type DisplayState = 'on' | 'dim' | 'sleep';
@@ -27,6 +28,7 @@ export class App implements OnInit, OnDestroy {
   private currentIndex?: string;
   private sleepFrom = '';
   private sleepTo = '';
+  theme = inject(ThemeService);
 
   private async fetchIndex(): Promise<string | undefined> {
     try {
@@ -46,6 +48,7 @@ export class App implements OnInit, OnDestroy {
     this.sleepTimer = setInterval(() => this.checkSleepTime(), 60_000);
 
     this.currentIndex = await this.fetchIndex();
+    await this.theme.loadColorSettings();
     this.versionTimer = setInterval(async () => {
       const latest = await this.fetchIndex();
       if (!latest){

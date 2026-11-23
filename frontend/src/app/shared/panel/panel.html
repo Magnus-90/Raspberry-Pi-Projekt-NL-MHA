@@ -5,6 +5,9 @@
     (click)="onClick($event)">
     <div class="panel-header" cdkDragHandle>
         {{ title() }}
+        <button class="close" title="Ausblenden" (click)="onClose($event)">
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
     <div class="panel-body">
         <ng-content />

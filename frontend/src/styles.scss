@@ -1,18 +1,78 @@
-/* You can add global styles to this file, and also import other style files */
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
-// Material-Theme: setzt die Farb-/Schrift-Variablen, ohne die z.B. das Timepicker-Popup durchsichtig ist
 html {
-  @include mat.theme((
-    color: (theme-type: light, primary: mat.$azure-palette),
-    typography: 'Segoe UI',
-    density: 0,
-  ));
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$magenta-palette,
+        tertiary: mat.$violet-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+/* You can add global styles to this file, and also import other style files */
+:root {
+  --color-primary: #2563eb;
+  --color-secondary: #64748b;
+  --color-primary-hover: color-mix(in srgb, var(--color-primary), black 15%);
+  --color-secondary-hover: color-mix(in srgb, var(--color-secondary), black 15%);
+  --color-primary-light: color-mix(in srgb, var(--color-primary), white 80%);
+  --color-secondary-light: color-mix(in srgb, var(--color-secondary), white 80%);
+  --color-text: #111827;
+  --color-surface: #ffffff;
+  --color-border: #000000;
+}
+
+:root[data-theme='dark'] {
+  --color-primary-light: color-mix(in srgb, var(--color-primary), black 70%);
+  --color-secondary-light: color-mix(in srgb, var(--color-secondary), black 70%);
+  --color-text: #f1f5f9;
+  --color-surface: #0f172a;
+  --color-border: #475569;
+  color-scheme: dark;
+}
+
+
+.btn {
+  padding: 10px;
+  border: 0;
+  border-radius: 8px;
+  color: white;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+
+  &:hover { 
+    background-color: var(--color-primary-hover); 
+  }
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+
+  &:hover { 
+    background-color: var(--color-secondary-hover); 
+  }
 }
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
+  background-color: var(--color-surface);
+  color: var(--color-text);
 }
 
 app-panel img {
@@ -26,17 +86,21 @@ app-panel img {
   padding: 12px;
 }
 
-.module-time, .content > app-time {
+.module-time,
+.content > app-time {
   view-transition-name: module-time;
 }
-.module-weather, .content > app-weather {
+.module-weather,
+.content > app-weather {
   view-transition-name: module-weather;
 }
-.module-public-transport, .content > app-public-transport {
+.module-public-transport,
+.content > app-public-transport {
   view-transition-name: module-public-transport;
 }
 
-.module-event, .content > app-event-countdown {
+.module-event,
+.content > app-event-countdown {
   view-transition-name: module-event;
 }
 

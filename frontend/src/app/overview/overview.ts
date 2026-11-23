@@ -1,6 +1,8 @@
-import { Component, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { Point } from '@angular/cdk/drag-drop';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { Panel } from '../shared/panel/panel';
 import { WeatherComponent } from '../modules/weather/weather';
 import { TimeConponent } from '../modules/time/time';
@@ -16,6 +18,9 @@ const DEFAULT_CELLS: Record<string, number> = { 'time': 0, 'event': 1, 'weather'
 // Route, auf der das Modul im Vollbild läuft (siehe app.routes.ts)
 const MODULE_ROUTES: Record<string, string> = { 'time': 'clock', 'event': 'event', 'weather': 'weather', 'public-transport': 'publictransport' };
 
+// Beschriftung im Menü der ausgeblendeten Module
+const MODULE_TITLES: Record<string, string> = { 'time': 'Time', 'event': 'Event', 'weather': 'Weather', 'public-transport': 'Public Transport' };
+
 interface Area {
   row: number,
   col: number,
@@ -30,7 +35,9 @@ interface Area {
     WeatherComponent,
     TimeConponent,
     PublicTransport,
-    EventCountdown
+    EventCountdown,
+    MatIconModule,
+    MatMenuModule
   ],
   templateUrl: './overview.html',
   styleUrl: './overview.scss',
@@ -42,6 +49,25 @@ export class Overview {
   // false = freie Felder werden zuerst in der Zeile gefüllt, true = zuerst in der Spalte
   vertical = signal<boolean>(localStorage.getItem(VERTICAL_KEY) === 'true');
   dragging = signal<{ id: string, cell: number } | null>(null);
+  // Ein Modul ohne Eintrag in cells ist ausgeblendet
+  hidden = computed(() => Object.keys(MODULE_TITLES).filter(id => !(id in this.cells())));
+  titles = MODULE_TITLES;
+
+  visible(id: string) {
+    return id in this.cells();
+  }
+
+  hide(id: string) {
+    const { [id]: _, ...cells } = this.cells();
+    // Die übrigen Module wachsen über areaOf() automatisch in das frei gewordene Feld
+    this.save(cells);
+  }
+
+  show(id: string) {
+    const cells = { ...this.cells() };
+    cells[id] = [0, 1, 2, 3].find(cell => !Object.values(cells).includes(cell))!;
+    this.save(cells);
+  }
 
   area(id: string) {
     const dragging = this.dragging();
@@ -82,6 +108,10 @@ export class Overview {
       this.vertical.set(!Object.values(cells).includes(colMate));
     }
 
+    this.save(cells);
+  }
+
+  private save(cells: Record<string, number>) {
     this.cells.set(cells);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(cells));
     localStorage.setItem(VERTICAL_KEY, String(this.vertical()));
