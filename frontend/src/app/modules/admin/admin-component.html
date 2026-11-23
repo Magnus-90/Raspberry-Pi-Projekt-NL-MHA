@@ -34,7 +34,7 @@
             <label for="publictransportlocation">ÖPNV Standort:</label>
             <input id="publictransportlocation" type="text" [value]="publictransportlocation()" (input)="publictransportlocation.set($any($event.target).value)">
         </div>
-        <div class="colorkonfigurations">
+        <div class="colorconfigurations">
             <label for="primarycolor">Primärfarbe:</label>
             <input #primary id="primarycolor" [value]="primarycolor()" (input)="setPrimaryColor(primary.value)" type="color">
             <label for="secondarycolor">Sekundärfarbe:</label>

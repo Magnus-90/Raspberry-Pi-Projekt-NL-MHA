@@ -62,8 +62,6 @@ def updateSettingsRaspberryPi():
             return jsonify({"error": f"Ungültiger Wert für {key}"}), 400
         if key in db_methods.COLOR_KEYS and not HEX_COLOR.match(value.strip()):
             return jsonify({"error": f"Ungültige Farbe für {key}"}), 400
-        if key == "darkmode" and value.strip() not in db_methods.DARKMODE_VALUES:
-            return jsonify({"error": "Ungültiger Wert für darkmode"}), 400
         settings[key] = value.strip()
 
     try:
