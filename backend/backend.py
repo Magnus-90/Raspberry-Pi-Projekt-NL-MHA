@@ -13,9 +13,9 @@ CORS(app)
 # The helper runs on the Pi (not in the container), reachable via host.docker.internal
 HELPER_URL = "http://host.docker.internal:5001"
 
-def call_helper(path, started_message):
+def call_helper(path, started_message, payload=None):
     try:
-        response = requests.post(f"{HELPER_URL}/{path}", timeout=60)
+        response = requests.post(f"{HELPER_URL}/{path}", json=payload, timeout=60)
     except requests.exceptions.RequestException:
         return jsonify({"status": "Helfer nicht erreichbar"}), 502
     if response.ok:
@@ -31,6 +31,17 @@ def updateRaspberryPi():
 @auth.require_admin
 def restartRaspberryPi():
     return call_helper("restart", "neustart gestartet")
+
+DISPLAY_STATES = ("on", "dim", "sleep")
+
+# Ohne Login: Der Kiosk-Browser schaltet das Display selbst (Stand-by und Ruhemodus)
+@app.route("/display", methods=["POST"])
+def setDisplayRaspberryPi():
+    data = request.get_json(silent=True)
+    state = data.get("state") if isinstance(data, dict) else None
+    if state not in DISPLAY_STATES:
+        return jsonify({"error": "Erwartet state: on, dim oder sleep"}), 400
+    return call_helper("display", f"display {state}", {"state": state})
 
 SETTINGS_MAX_LENGTH = 100
 TIME_PATTERN = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
