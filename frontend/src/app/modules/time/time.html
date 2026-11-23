@@ -1,8 +1,36 @@
-<div class="timecomponent">
-  <div class="time">
-    <p>{{ time() }}</p>
+@if (detail()) {
+  <div class="timecomponent detail">
+    <div class="time">
+      <p>{{ time() }}</p>
+    </div>
+    <div class="date">
+      <p>{{ getCurrentDate() }}</p>
+    </div>
+    <div class="timezone">
+      <p>Zeitzone: {{ currentTimeZone() }}</p>
+    </div>
+    <div class="nextTimeSwitch">
+      @if (nextTimeSwitchDate(); as sw) {
+        <p>Zeitumstellung: {{ formatDate(sw.date) }} auf {{ sw.toSummer ? 'Sommerzeit' : 'Winterzeit' }}</p>
+      } @else {
+        <p>Keine Zeitumstellung</p>
+      }
+    </div>
+    <div class="dayProgress">
+      <p>Tag ist zu {{ dayProgress() }}% vorbei.</p>
+      <progress max="100" [value]="dayProgress()"></progress>
+    </div>
+    <div class="calendarWeek">
+      <p>KW: {{ calendarWeek() }}</p>
+    </div>
   </div>
-  <div class="date">
-    <p>{{ getCurrentDate() }}</p>
+} @else {
+  <div class="timecomponent">
+    <div class="time">
+      <p>{{ time() }}</p>
+    </div>
+    <div class="date">
+      <p>{{ getCurrentDate() }}</p>
+    </div>
   </div>
-</div>
+}

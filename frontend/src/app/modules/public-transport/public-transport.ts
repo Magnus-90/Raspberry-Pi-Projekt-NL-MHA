@@ -21,7 +21,7 @@ export class PublicTransport implements OnInit, OnDestroy {
     );
     const data = await response.json();
     console.log(data);
-    return data;
+    return { ...data, stationboard: (data.stationboard ?? []).slice(0, 10) };
   }
 
   async getPublicTransportSettings(): Promise<string> {
