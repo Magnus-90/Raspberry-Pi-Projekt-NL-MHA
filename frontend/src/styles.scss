@@ -19,9 +19,60 @@ html {
 }
 
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --color-primary: #2563eb;
+  --color-secondary: #64748b;
+  --color-primary-hover: color-mix(in srgb, var(--color-primary), black 15%);
+  --color-secondary-hover: color-mix(in srgb, var(--color-secondary), black 15%);
+  --color-primary-light: color-mix(in srgb, var(--color-primary), white 80%);
+  --color-secondary-light: color-mix(in srgb, var(--color-secondary), white 80%);
+  --color-text: #111827;
+  --color-surface: #ffffff;
+  --color-border: #000000;
+}
+
+:root[data-theme='dark'] {
+  --color-primary-light: color-mix(in srgb, var(--color-primary), black 70%);
+  --color-secondary-light: color-mix(in srgb, var(--color-secondary), black 70%);
+  --color-text: #f1f5f9;
+  --color-surface: #0f172a;
+  --color-border: #475569;
+  color-scheme: dark;
+}
+
+
+.btn {
+  padding: 10px;
+  border: 0;
+  border-radius: 8px;
+  color: white;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+
+  &:hover { 
+    background-color: var(--color-primary-hover); 
+  }
+}
+
+.btn-secondary {
+  background-color: var(--color-secondary);
+
+  &:hover { 
+    background-color: var(--color-secondary-hover); 
+  }
+}
+
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
+  background-color: var(--color-surface);
+  color: var(--color-text);
 }
 
 app-panel img {
