@@ -7,9 +7,9 @@ import { AdminComponent } from './modules/admin/admin-component';
 import { EventCountdown } from './modules/event-countdown/event-countdown/event-countdown';
 export const routes: Routes = [
     {path: '', component: Overview},
-    {path: 'clock', component: TimeConponent},
-    {path: 'weather', component: WeatherComponent},
-    {path: 'publictransport', component: PublicTransport},
-    {path: 'event', component: EventCountdown},
+    {path: 'clock', component: TimeConponent, data: {detail: true}},
+    {path: 'weather', component: WeatherComponent, data: {detail: true}},
+    {path: 'publictransport', component: PublicTransport, data: {detail: true}},
+    {path: 'event', component: EventCountdown, data: {detail: true}},
     {path: 'admin', component: AdminComponent}
 ];

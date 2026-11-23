@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { booleanAttribute, Component, input, OnDestroy, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 @Component({
   selector: 'app-public-transport',
@@ -11,6 +11,7 @@ export class PublicTransport implements OnInit, OnDestroy {
   private timer?: ReturnType<typeof setTimeout>;
   private destroyed = false;
   publictransportdata = signal<any>(null);
+  detail = input(false, { transform: booleanAttribute });
   async getpublictransportdata(location : string) {
     if(!location){
       return null;
@@ -20,7 +21,7 @@ export class PublicTransport implements OnInit, OnDestroy {
     );
     const data = await response.json();
     console.log(data);
-    return data;
+    return { ...data, stationboard: (data.stationboard ?? []).slice(0, 10) };
   }
 
   async getPublicTransportSettings(): Promise<string> {
