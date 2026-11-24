@@ -55,7 +55,7 @@ export class PublicTransport implements OnInit, OnDestroy {
         .map((s: any) => s.stop.departureTimestamp * 1000)
         .find((t: number) => t > now);
 
-      if (nextDeparture) wait = Math.min(Math.max(nextDeparture - now, 10_000), 60_000);
+      if (nextDeparture) wait = Math.min(Math.max(nextDeparture - now, 30_000), 60_000);
     } catch (e) {
       console.error('Public transport fetch failed', e);
     }

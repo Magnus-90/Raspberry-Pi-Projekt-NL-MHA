@@ -1,7 +1,8 @@
+<app-global-notifications [hidden]="onAdmin()" />
 <div class="content">
   <!-- Im Ruhemodus werden die Module entfernt, damit Uhr, Wetter und ÖV nicht weiter rechnen und abfragen -->
   @if (displayState() !== 'sleep') {
-    <router-outlet></router-outlet>
+    <router-outlet (activate)="onActivate($event)"></router-outlet>
   }
 </div>
 @if (displayState() !== 'on') {

@@ -1,6 +1,8 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { ThemeService } from '../services/theme-service';
+import { GlobalNotifications } from './global-notifications/global-notifications';
+import { AdminComponent } from './modules/admin/admin-component';
 
 // on = normal, dim = Stand-by (dunkler, Berührung weckt), sleep = Ruhemodus (aus, nur die Uhrzeit weckt)
 type DisplayState = 'on' | 'dim' | 'sleep';
@@ -10,7 +12,7 @@ const BACKEND_URL = `http://${window.location.hostname}:5000`;
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, GlobalNotifications],
   templateUrl: './app.html',
   styleUrl: './app.scss',
   host: {
@@ -37,6 +39,12 @@ export class App implements OnInit, OnDestroy {
     } catch {
       return undefined;
     }
+  }
+
+  onAdmin = signal(false);
+
+  onActivate(component: unknown) {
+    this.onAdmin.set(component instanceof AdminComponent);
   }
 
   async ngOnInit() {
