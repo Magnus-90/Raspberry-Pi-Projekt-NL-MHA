@@ -12,6 +12,8 @@ export class PublicTransport implements OnInit, OnDestroy {
   private destroyed = false;
   publictransportdata = signal<any>(null);
   detail = input(false, { transform: booleanAttribute });
+  loadError = signal(false);
+
   async getpublictransportdata(location : string) {
     if(!location){
       return null;
@@ -19,6 +21,9 @@ export class PublicTransport implements OnInit, OnDestroy {
     const response = await fetch(
       `https://transport.opendata.ch/v1/stationboard?station=${encodeURIComponent(location)}&limit=10`,
     );
+    if (!response.ok) {
+      throw new Error(`Fahrplan antwortet mit ${response.status}`);
+    }
     const data = await response.json();
     console.log(data);
     return { ...data, stationboard: (data.stationboard ?? []).slice(0, 10) };
@@ -44,6 +49,7 @@ export class PublicTransport implements OnInit, OnDestroy {
         return;
       }
       this.publictransportdata.set(data);
+      this.loadError.set(false);
 
       if (!data) {
         this.timer = setTimeout(() => this.update(), wait);
@@ -58,6 +64,7 @@ export class PublicTransport implements OnInit, OnDestroy {
       if (nextDeparture) wait = Math.min(Math.max(nextDeparture - now, 10_000), 60_000);
     } catch (e) {
       console.error('Public transport fetch failed', e);
+      this.loadError.set(true);
     }
     if (this.destroyed){
       return;

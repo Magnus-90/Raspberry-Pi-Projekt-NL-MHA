@@ -130,3 +130,16 @@
 .weathercomponent.detail .text {
   font-size: min(5cqw, 8cqh);
 }
+
+.error {
+    margin: 0;
+    padding: 0.5em 0.8em;
+    border: 2px solid #dc2626;
+    border-left-width: 10px;
+    border-radius: 8px;
+    background-color: #fee2e2;
+    color: #991b1b;
+    font-size: min(3.2cqw, 4.5cqh);
+    font-weight: bold;
+    text-align: center;
+}

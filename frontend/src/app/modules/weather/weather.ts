@@ -209,7 +209,7 @@ private renderChart(canvas: HTMLCanvasElement, data: any) {
       this.error.set("");
     } catch (e) {
       console.error('Weather fetch failed', e);
-      this.error.set("Wetterdaten konnten nicht geladen werden");
+      this.error.set("Wetterdaten konnten nicht geladen werden.");
     }
   }
 

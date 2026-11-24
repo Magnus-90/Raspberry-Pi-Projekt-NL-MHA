@@ -30,6 +30,9 @@
             <p>{{ error() }}</p>
         }
     </dialog>
+    @if (error()) {
+            <p class="error">{{ error() }}</p>
+        }
     <div class="content">
         @if (getNextEvent()?.name != null) {
             <div class="nextEvent">

@@ -153,7 +153,7 @@ hideEventForm() {
       this.error.set("");
     } catch (e) {
       console.error('Events fetch failed', e);
-      this.error.set("Events konnten nicht geladen werden");
+      this.error.set("Events konnten nicht geladen werden.");
     }
   }
 
