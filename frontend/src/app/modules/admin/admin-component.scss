@@ -24,7 +24,7 @@
     border-radius: 8px;
 }
 
-.konfigurations, .systemstats{
+.systemstats{
     display: grid;
     grid-template-columns: 1fr;
     gap: 12px;
@@ -41,14 +41,56 @@
     }
 }
 
-.konfigurations{
-    place-items: center;
+.settings{
+    display: grid;
+    grid-template-areas:
+        "title"
+        "module-settings"
+        "buttons";
+    gap: 12px;
+    padding: 15px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    align-items: stretch;
+
+    .buttons{
+        grid-area: buttons;
+        display: flex;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    // Farben und Hover kommen aus .btn in styles.scss
+    .buttons button{
+        min-width: 200px;
+    }
+
+    .title {
+        grid-area: title;
+    }
+
+    .konfiguration{
+        display: grid;
+        grid-area: module-settings;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        width: 100%;
+    }
 }
 
-.weatherkonfigurations, .publictransportkonfigurations{
+
+.weatherkonfigurations, .publictransportkonfigurations, .general{
     display: grid;
     gap: 4px;
     width: 100%;
+}
+
+// Ruhemodus: Von- und Bis-Feld nebeneinander, gleich breit
+.time-range{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
 }
 
 .colorconfigurations {

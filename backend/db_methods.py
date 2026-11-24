@@ -6,13 +6,16 @@ KEY_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "db", "raspi
 
 SETTINGS_COLLECTION = "settings"
 SETTINGS_DOCS = {
-    "general":         ("primarycolor", "secondarycolor", "darkmode"),
+    "general":         ("primarycolor", "secondarycolor", "darkmode", "sleepfrom", "sleepto"),
     "weather":         ("weatherlocation",),
     "publictransport": ("publictransportlocation", "publictransportlocation2"),
 }
 ALL_KEYS = tuple(key for keys in SETTINGS_DOCS.values() for key in keys)
-OPTIONAL_KEYS = ("publictransportlocation2",)
+# Leere Ruhemodus-Zeiten schalten den Ruhemodus aus
+OPTIONAL_KEYS = ("publictransportlocation2", "sleepfrom", "sleepto")
 COLOR_KEYS = ("primarycolor", "secondarycolor")
+# Ruhemodus von/bis, gespeichert als "HH:MM"
+TIME_KEYS = ("sleepfrom", "sleepto")
 DARKMODE_VALUES = ("true", "false")
 
 EVENTS_COLLECTION = "events"

@@ -1,4 +1,10 @@
 <app-global-notifications [hidden]="onAdmin()" />
 <div class="content">
-  <router-outlet (activate)="onActivate($event)"></router-outlet>
+  <!-- Im Ruhemodus werden die Module entfernt, damit Uhr, Wetter und ÖV nicht weiter rechnen und abfragen -->
+  @if (displayState() !== 'sleep') {
+    <router-outlet></router-outlet>
+  }
 </div>
+@if (displayState() !== 'on') {
+  <div class="screen-overlay" [class.dim]="displayState() === 'dim'" (click)="onOverlayClick()"></div>
+}

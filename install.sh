@@ -115,6 +115,13 @@ else
     exit 1
 fi
 
+# Der Helfer dimmt die Hintergrundbeleuchtung (Stand-by, Ruhemodus). brightness gehört root,
+# darum bekommt die Gruppe video (siehe Schritt 5) Schreibrechte.
+echo 'SUBSYSTEM=="backlight", RUN+="/bin/chgrp video /sys%p/brightness", RUN+="/bin/chmod g+w /sys%p/brightness"' \
+    | sudo tee /etc/udev/rules.d/99-backlight.rules > /dev/null
+sudo udevadm control --reload
+sudo udevadm trigger --subsystem-match=backlight --action=add
+
 sed -e "s|@USER@|$TARGET_USER|g" \
     -e "s|@PROJECT_DIR@|$PROJECT_DIR|g" \
     "$PROJECT_DIR/systemd/$SERVICE_NAME_HELPER" \

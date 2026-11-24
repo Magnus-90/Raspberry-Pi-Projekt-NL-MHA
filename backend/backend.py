@@ -14,9 +14,9 @@ CORS(app)
 HELPER_URL = "http://host.docker.internal:5001"
 HEX_COLOR = re.compile(r"^#[0-9a-fA-F]{6}$")
 
-def call_helper(path, started_message):
+def call_helper(path, started_message, payload=None):
     try:
-        response = requests.post(f"{HELPER_URL}/{path}", timeout=60)
+        response = requests.post(f"{HELPER_URL}/{path}", json=payload, timeout=60)
     except requests.exceptions.RequestException:
         return jsonify({"status": "Helfer nicht erreichbar"}), 502
     if response.ok:
@@ -33,7 +33,19 @@ def updateRaspberryPi():
 def restartRaspberryPi():
     return call_helper("restart", "neustart gestartet")
 
+DISPLAY_STATES = ("on", "dim", "sleep")
+
+# Ohne Login: Der Kiosk-Browser schaltet das Display selbst (Stand-by und Ruhemodus)
+@app.route("/display", methods=["POST"])
+def setDisplayRaspberryPi():
+    data = request.get_json(silent=True)
+    state = data.get("state") if isinstance(data, dict) else None
+    if state not in DISPLAY_STATES:
+        return jsonify({"error": "Erwartet state: on, dim oder sleep"}), 400
+    return call_helper("display", f"display {state}", {"state": state})
+
 SETTINGS_MAX_LENGTH = 100
+TIME_PATTERN = re.compile(r"^([01]\d|2[0-3]):[0-5]\d$")
 
 @app.route("/settings", methods=["GET"])
 def getSettingsRaspberryPi():
@@ -62,6 +74,8 @@ def updateSettingsRaspberryPi():
             return jsonify({"error": f"Ungültiger Wert für {key}"}), 400
         if key in db_methods.COLOR_KEYS and not HEX_COLOR.match(value.strip()):
             return jsonify({"error": f"Ungültige Farbe für {key}"}), 400
+        if key in db_methods.TIME_KEYS and value.strip() and not TIME_PATTERN.match(value.strip()):
+            return jsonify({"error": f"Ungültige Uhrzeit für {key}, erwartet HH:MM"}), 400
         settings[key] = value.strip()
 
     try:

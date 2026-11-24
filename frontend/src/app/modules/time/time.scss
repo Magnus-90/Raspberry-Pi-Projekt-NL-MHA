@@ -18,7 +18,7 @@
     }
 }
 
-.time, .date{
+.time, .date, .calendarWeek, .timezone, .nextTimeSwitch, .dayProgress{
     display: grid;
     place-items: center;
     min-width: 0;
@@ -35,12 +35,13 @@
     }
 }
 
-.time{
-    background-color: var(--color-primary);
+// Farben aus dem Admin Panel; ohne Variable (z. B. auf diesem Branch) bleibt es schwarz
+.time, .date{
+    background-color: var(--color-primary, black);
 }
 
-.date{
-    background-color: var(--color-primary);
+.calendarWeek, .timezone, .nextTimeSwitch, .dayProgress{
+    background-color: var(--color-secondary, black);
 }
 
 .time p{
@@ -50,4 +51,91 @@
 .date p{
     padding: 8px;
     font-size: min(13cqw, 28cqh);
+}
+
+.calendarWeek p{
+    padding: 8px;
+    font-size: min(13cqw, 28cqh);
+}
+
+.timezone p {
+    padding: 8px;
+    font-size: min(13cqw, 28cqh);
+}
+
+.nextTimeSwitch p{
+    padding: 8px;
+    font-size: min(8cqw, 28cqh);
+}
+
+.dayProgress p{
+    padding: 8px;
+    font-size: min(8cqw, 28cqh);
+}
+
+// Text und Balken untereinander, der Balken ist ein eigener Streifen
+.dayProgress{
+    align-content: center;
+    gap: 3cqh;
+
+    progress{
+        width: 80cqw;
+        height: 18cqh;
+        appearance: none;
+        border: 0;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.2);
+
+        &::-webkit-progress-bar{
+            background: rgba(255, 255, 255, 0.2);
+        }
+        &::-webkit-progress-value{
+            background: var(--color-primary, #4caf50);
+            transition: width 1s linear;
+        }
+        &::-moz-progress-bar{
+            background: var(--color-primary, #4caf50);
+        }
+    }
+}
+
+.timecomponent.detail{
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: minmax(0, 3fr) repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+        "time time"
+        "date week"
+        "zone switch"
+        "progress progress";
+
+    .time { 
+        grid-area: time; 
+    }
+
+    .date { 
+        grid-area: date; 
+    }
+
+    .calendarWeek { 
+        grid-area: week; 
+    }
+
+    .timezone { 
+        grid-area: zone;
+    }
+
+    .nextTimeSwitch { 
+        grid-area: switch; 
+    }
+
+    .dayProgress { 
+        grid-area: progress;
+    }
+
+    .date p, .calendarWeek p, .timezone p, .nextTimeSwitch p, .dayProgress p{
+        padding: 8px;
+        font-size: min(6cqw, 22cqh);
+        line-height: 1.15;
+    }
 }

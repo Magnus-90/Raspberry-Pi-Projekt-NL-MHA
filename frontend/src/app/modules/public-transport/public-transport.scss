@@ -11,6 +11,7 @@
 
 .items{
     display: grid;
+    grid-template-rows: repeat(11, minmax(0, 1fr));
     align-content: start;
     flex: 1;
     min-height: 0;
@@ -42,8 +43,8 @@
 
 .header{
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    font-size: min(2.8cqw, 3.5cqh);
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr) minmax(0, 1.4fr);
+    font-size: min(2.8cqw, 4cqh);
     font-weight: bold;
     place-items: center;
 }
@@ -51,9 +52,51 @@
 .item{
     display: grid;
     place-items: center;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr) minmax(0, 1.4fr);
+    border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.header p, .item p {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.header p:first-child, .item p:first-child {
+    justify-self: start;
 }
 
 .delay{
     color: red;
+}
+
+.detail {
+    .header, .item {
+        grid-template-columns:
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr)
+            minmax(0, 1fr);
+    }
+
+    .text, .header {
+        font-size: min(2cqw, 3.5cqh);
+    }
+
+    // In der Detailansicht ist die Linie zentriert und nur das Ziel linksbündig
+    .header p:first-child, .item p:first-child {
+        justify-self: center;
+    }
+
+    .header p:nth-child(2), .item p:nth-child(2) {
+        justify-self: start;
+    }
+}
+
+.icon{
+    width: min(2.8cqw, 4cqh);
 }
