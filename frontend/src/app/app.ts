@@ -2,6 +2,7 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeService } from '../services/theme-service';
 import { GlobalNotifications } from './global-notifications/global-notifications';
+import { AdminComponent } from './modules/admin/admin-component';
 
 @Component({
   selector: 'app-root',
@@ -22,6 +23,12 @@ export class App implements OnInit, OnDestroy {
     } catch {
       return undefined;
     }
+  }
+
+  onAdmin = signal(false);
+
+  onActivate(component: unknown) {
+    this.onAdmin.set(component instanceof AdminComponent);
   }
 
   async ngOnInit() {

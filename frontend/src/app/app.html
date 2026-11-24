@@ -1,4 +1,4 @@
-<app-global-notifications />
+<app-global-notifications [hidden]="onAdmin()" />
 <div class="content">
-  <router-outlet></router-outlet>
+  <router-outlet (activate)="onActivate($event)"></router-outlet>
 </div>

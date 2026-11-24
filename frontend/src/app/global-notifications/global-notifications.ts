@@ -6,6 +6,7 @@ interface AppNotification {
   type: 'weather' | 'transport' | 'event';
   severity: 'info' | 'warning' | 'critical';
   text: string;
+  until: number;
 }
 
 // Events werden so viele Minuten vor dem Start gemeldet
@@ -28,13 +29,42 @@ export class GlobalNotifications implements OnInit, OnDestroy {
   private reported: string[] = [];
 
   add(n: AppNotification) {
-    if (this.reported.includes(n.id)) return;
-    this.reported.push(n.id);
-    this.notifications.update(list => [...list, n]);
+    const list = this.notifications();
+    if(!this.reported.includes(n.id)){
+      this.reported.push(n.id);
+      this.notifications.set([...list, n]);
+      return;
+    }
+
+    for(let i = 0; i < list.length; i++){
+      if(list[i].id === n.id){
+        const newList = [...list];
+        newList[i] = n;
+        this.notifications.set(newList);
+        return;
+      }
+    }
   }
 
   dismiss(id: string) {
-    this.notifications.update(list => list.filter(n => n.id !== id));
+    const newList: AppNotification[] = [];
+    for (const n of this.notifications()){
+      if  (n.id !== id){
+        newList.push(n);
+      }
+    }
+    this.notifications.set(newList);
+  }
+
+  private removeExpired(){
+    const now = Date.now();
+    const newList: AppNotification[] = [];
+    for (const n of this.notifications()){
+      if(n.until > now){
+        newList.push(n);
+      }
+    }
+    this.notifications.set(newList);
   }
 
   private stationboard: any[] = [];
@@ -65,6 +95,7 @@ export class GlobalNotifications implements OnInit, OnDestroy {
           type: 'event',
           severity: 'info',
           text: `${event.name} beginnt in ${minutes} Min.`,
+          until: time,
         });
       }
     }
@@ -106,22 +137,31 @@ export class GlobalNotifications implements OnInit, OnDestroy {
   }
 
   public checkDelays(){
-    const now = Date.now()
+    this.removeExpired();
+    const now = Date.now();
     for (const item of this.stationboard){
       const delay = item.stop.delay;
       const planned = item.stop.departureTimestamp * 1000;
       const actual = planned + delay * 60000;
+      const id = `delay-${item.name}-${item.stop.departureTimestamp}`;
       if (delay > 0 && planned < now + 30 * 60000 && actual > now) {
         let severity: AppNotification['severity'] = 'info';
         if (delay >= 10) {
           severity = 'warning';
         }
         this.add({
-          id: `delay-${item.name}-${item.stop.departureTimestamp}`,
+          id: id,
           type: 'transport',
           severity: severity,
           text: `${item.category} ${item.number} nach ${item.to}: +${delay} Min.`,
+          until: actual,
         })
+      } else {
+        this.dismiss(id);
+        const pos = this.reported.indexOf(id);
+        if (pos >= 0) {
+          this.reported.splice(pos, 1);
+        }
       }
     }
   }
@@ -136,7 +176,7 @@ export class GlobalNotifications implements OnInit, OnDestroy {
     }, 300000);
     this.publicTransportFetchTimer = setInterval(() => {
       this.loadDelays();
-    }, 300000);
+    }, 60000);
     this.eventCheckTimer = setInterval(() => {
       this.checkEvents();
     }, 30000);
