@@ -27,11 +27,11 @@
             <button type="submit">Speichern</button>
         </form>
         @if (error()) {
-            <p>{{ error() }}</p>
+            <p class="error">{{ error() }}</p>
         }
     </dialog>
-    @if (error()) {
-            <p class="error">{{ error() }}</p>
+    @if (dashboardError()) {
+            <p class="dashboardError">{{ dashboardError() }}</p>
         }
     <div class="content">
         @if (getNextEvent()?.name != null) {
