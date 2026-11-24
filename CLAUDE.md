@@ -42,7 +42,7 @@ Datenfluss:
 │   ├── db_methods.py          Firestore-Zugriff, KEY_PATH, SETTINGS_KEYS
 │   ├── db/                    Firebase-Schlüssel (gitignored, read-only in den Container gemountet)
 │   └── requirements.txt       ACHTUNG: UTF-16-kodiert
-├── host-helper/helper.py      /health, /update, /restart
+├── host-helper/helper.py      /health, /update, /restart, /display (Backlight)
 ├── systemd/                   Service-Vorlagen mit @USER@/@PROJECT_DIR@/@UID@, von install.sh befüllt
 ├── install.sh                 Idempotente Einrichtung des Pi
 ├── deploy.sh                  git pull --ff-only + docker compose up -d --build
@@ -58,6 +58,9 @@ Datenfluss:
 | `/settings` | POST | Nur Schlüssel aus `SETTINGS_KEYS`, Strings ≤ 100 Zeichen, merge in Firestore |
 | `/health` | GET | Temperatur, CPU, RAM des Pi |
 | `/update`, `/restart` | POST | Leitet an den Host-Helfer weiter (202 bei Erfolg, 502 wenn nicht erreichbar) |
+| `/display` | POST | `{ state: on \| dim \| sleep }`, ohne Login. Helfer setzt die Hintergrundbeleuchtung |
+
+Stand-by und Ruhemodus steuert `app.ts`: nach 2 min ohne Berührung `dim` + Navigation aufs Dashboard, zwischen `sleepfrom` und `sleepto` `sleep` (Module entfernt, Berührung weckt nicht). Ein Overlay fängt die weckende Berührung ab.
 
 Eine neue Einstellung braucht: Eintrag in `SETTINGS_KEYS` (`db_methods.py`), Feld im Admin Panel, Nutzung im Modul.
 

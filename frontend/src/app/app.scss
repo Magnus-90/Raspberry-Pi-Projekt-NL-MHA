@@ -4,3 +4,15 @@
   justify-content: center;
   align-items: center;
 }
+
+// Liegt im Stand-by und Ruhemodus über allem, damit die weckende Berührung keinen Klick im Dashboard auslöst
+.screen-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background-color: black;
+
+  &.dim{
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}
