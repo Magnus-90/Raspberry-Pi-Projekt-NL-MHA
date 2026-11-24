@@ -10,7 +10,7 @@ interface AppNotification {
 }
 
 // Events werden so viele Minuten vor dem Start gemeldet
-const EVENT_LEAD_MIN = 15;
+const EVENT_LEAD_MIN = 5;
 
 @Component({
   selector: 'app-global-notifications',
@@ -21,12 +21,28 @@ const EVENT_LEAD_MIN = 15;
 export class GlobalNotifications implements OnInit, OnDestroy {
   public url = `http://${window.location.hostname}:5000`;
 
-  notifications = signal<AppNotification[]>([
-    // { id: 'test-1', type: 'event', severity: 'info', text: 'Test: Event beginnt in 15 Min.' },
-    // { id: 'test-2', type: 'transport', severity: 'info', text: 'Test: S 21 nach Appenzell +5 Min.' },
-  ]);
+  notifications = signal<AppNotification[]>([]);
 
   private reported: string[] = [];
+
+  async ngOnInit() {
+    await this.loadEvents();
+    await this.loadDelays();
+    this.checkEvents();
+    this.checkDelays();
+    this.eventFetchTimer = setInterval(() => {
+      this.loadEvents();
+    }, 300000);
+    this.publicTransportFetchTimer = setInterval(() => {
+      this.loadDelays();
+    }, 60000);
+    this.eventCheckTimer = setInterval(() => {
+      this.checkEvents();
+    }, 30000);
+    this.publicTransportCheckTimer = setInterval(() => {
+      this.checkDelays();
+    }, 30000);
+  }
 
   add(n: AppNotification) {
     const list = this.notifications();
@@ -164,25 +180,6 @@ export class GlobalNotifications implements OnInit, OnDestroy {
         }
       }
     }
-  }
-
-  async ngOnInit() {
-    await this.loadEvents();
-    await this.loadDelays();
-    this.checkEvents();
-    this.checkDelays();
-    this.eventFetchTimer = setInterval(() => {
-      this.loadEvents();
-    }, 300000);
-    this.publicTransportFetchTimer = setInterval(() => {
-      this.loadDelays();
-    }, 60000);
-    this.eventCheckTimer = setInterval(() => {
-      this.checkEvents();
-    }, 30000);
-    this.publicTransportCheckTimer = setInterval(() => {
-      this.checkDelays();
-    }, 30000);
   }
 
   ngOnDestroy() {
