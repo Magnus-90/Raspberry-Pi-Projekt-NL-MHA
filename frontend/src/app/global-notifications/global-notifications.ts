@@ -3,7 +3,7 @@ import { CountdownEvent, nextOccurrence } from '../modules/event-countdown/event
 
 interface AppNotification {
   id: string;
-  type: 'weather' | 'transport' | 'event';
+  type: 'transport' | 'event';
   severity: 'info' | 'warning' | 'critical';
   text: string;
   until: number;
