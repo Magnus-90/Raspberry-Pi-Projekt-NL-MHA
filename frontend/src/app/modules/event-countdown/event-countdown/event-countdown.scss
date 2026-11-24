@@ -29,6 +29,14 @@ dialog::backdrop {
     padding: 1em 1.5em;
     border: 1px solid var(--color-border);
     border-radius: 8px;
+
+    input, label, p{
+        font-size: min(2cqw, 4cqh);
+    }
+
+    button{
+        font-size: min(2cqw, 3cqh);
+    }
 }
 
 .content {
@@ -39,15 +47,6 @@ dialog::backdrop {
     min-height: 0;
 }
 
-.header{
-    display: flex;
-    align-items: center;
-    font-size: min(3cqw, 4cqh);
-    img{
-        width: min(3cqw, 4cqh);
-    }
-}
-
 .addEvent {
     align-self: flex-end;
     button{
@@ -56,6 +55,7 @@ dialog::backdrop {
         border-radius: 8px;
         background-color: var(--color-primary);
         color: white;
+        font-size: min(2cqw, 3cqh);
     }
 
     button:hover{
@@ -73,19 +73,18 @@ dialog::backdrop {
     text-align: center;
 
     strong {
-        font-size: min(6cqw, 10cqh);
+        font-size: min(8cqw, 12cqh);
     }
 
     p {
         margin: 0.2em 0 0;
-        font-size: min(6cqw, 8cqh);
-        font-weight: bold;
+        font-size: min(6cqw, 10cqh);
         font-variant-numeric: tabular-nums;
     }
 }
 
 .upCommingEvents{
-    font-size: min(3cqw, 4cqh);
+    font-size: min(3cqw, 6cqh);
 }
 
 .upCommingEvents strong{
@@ -106,9 +105,16 @@ hr {
 }
 
 strong {
-    font-size: min(3.2cqw, 5cqh);
+    font-size: min(3.2cqw, 8cqh);
 }
 
 p {
     margin: 0.2em 0;
+}
+
+@container (max-aspect-ratio: 1/1) {
+    .content {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: minmax(0, 2fr) minmax(0, 1fr);
+    }
 }

@@ -165,6 +165,9 @@ export class GlobalNotifications implements OnInit, OnDestroy {
         if (delay >= 10) {
           severity = 'warning';
         }
+        if (delay >= 20) {
+          severity = 'critical';
+        }
         this.add({
           id: id,
           type: 'transport',
