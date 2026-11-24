@@ -47,6 +47,12 @@ dialog::backdrop {
     min-height: 0;
 }
 
+@container(max-aspect-ratio: 1/1){
+    .content{
+        grid-template-columns: 1fr;
+    }
+}
+
 .addEvent {
     align-self: flex-end;
     button{

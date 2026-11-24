@@ -56,7 +56,7 @@
 .city {
   grid-area: city;
   color: #fff;
-  font-size: clamp(0.9rem, 2.5cqw, 4rem);
+  font-size: min(5.5cqw, 9.5cqh);
 
   p {
     margin: 0;
@@ -96,7 +96,7 @@
 
 .text{
   margin: 0;
-  font-size: clamp(0.75rem, min(6cqw, 10cqh), 2.2rem);
+  font-size: min(5.5cqw, 9.5cqh);
 }
 
 .currentTemperature,
