@@ -80,6 +80,8 @@ export class EventCountdown implements OnInit, OnDestroy {
   public seconds = signal(0);
   public formValues = signal<EventData>({ name: '', time: '' });
   detail = input(false, { transform: booleanAttribute });
+  private reloadId: any;
+  public dashboardError = signal("");
 
   upcomingEvents = computed(() => {
     const now = this.now().getTime();
@@ -126,34 +128,41 @@ hideEventForm() {
   }
 
   async sendEventForm() {
-    const currentData = this.formValues();
-    const response = await fetch(`${this.url}/events`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        name: currentData.name,
-        time: new Date(currentData.time).toISOString(),
-        series: !!currentData.series,
-        ...(currentData.series ? { repeat: currentData.repeat ?? 'weekly' } : {}),
-      }),
-    });
-    if (!response.ok) {
-      this.error.set("Event konnte nicht gespeichert werden");
-      return;
+    try {
+      const currentData = this.formValues();
+      const response = await fetch(`${this.url}/events`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: currentData.name,
+          time: new Date(currentData.time).toISOString(),
+          series: !!currentData.series,
+          ...(currentData.series ? { repeat: currentData.repeat ?? 'weekly' } : {}),
+        }),
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => null);
+        console.error('Event speichern:', response.status, body);
+        this.error.set("Event konnte nicht gespeichert werden.");
+        return;
+      }
+      this.error.set("");
+      this.hideEventForm();
+      await this.loadEventData();
+    } catch (e) {
+      console.error('Event speichern:', e);
+      this.error.set("Backend nicht erreichbar.");
     }
-    this.error.set("");
-    this.hideEventForm();
-    await this.loadEventData();
   }
 
 
   async loadEventData(){
     try {
       await this.getEvents()
-      this.error.set("");
+      this.dashboardError.set("");
     } catch (e) {
       console.error('Events fetch failed', e);
-      this.error.set("Events konnten nicht geladen werden");
+      this.dashboardError.set("Events konnten nicht geladen werden.");
     }
   }
 
@@ -176,10 +185,14 @@ hideEventForm() {
   async ngOnInit() {
     await this.loadEventData();
     this.updateCountdown();
+    this.reloadId = setInterval(() => {
+      this.loadEventData();
+    }, 60000);
   }
 
 
   ngOnDestroy() {
     clearInterval(this.id);
+    clearInterval(this.reloadId);
   }
 }
