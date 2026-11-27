@@ -16,7 +16,7 @@
     @if (loadError()) {
       <p class="error">Abfahrten konnten nicht geladen werden.</p>
     } @else {
-        @for (item of publictransportdata()?.stationboard ?? []; track $index) {
+        @for (item of (publictransportdata()?.stationboard ?? []).slice(0, detail() ? 10 : 6); track $index) {
         <div class="item">
           <p class="text">
             @if (detail()) {
