@@ -104,3 +104,22 @@
 .icon{
     width: min(2.8cqw, 4cqh);
 }
+
+.items > .error {
+    grid-row: 1 / -1;
+    align-self: flex-start;
+    margin: 0 1em;
+    padding: 0.5em 0.8em;
+    border: 2px solid #dc2626;
+    border-left-width: 10px;
+    border-radius: 8px;
+    background-color: #fee2e2;
+    color: #991b1b;
+    font-size: min(3.2cqw, 4.5cqh);
+    font-weight: bold;
+    text-align: center;
+}
+
+.items:has(> .error) .header {
+    display: none;
+}

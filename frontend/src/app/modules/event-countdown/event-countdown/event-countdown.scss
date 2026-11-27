@@ -118,3 +118,28 @@ strong {
 p {
     margin: 0.2em 0;
 }
+
+.dashboardError {
+    margin: 0;
+    padding: 0.5em 0.8em;
+    border: 2px solid #dc2626;
+    border-left-width: 10px;
+    border-radius: 8px;
+    background-color: #fee2e2;
+    color: #991b1b;
+    font-size: min(3.2cqw, 4.5cqh);
+    font-weight: bold;
+    text-align: center;
+}
+
+.error{
+    margin: 0;
+    padding: 0.5em 0.8em;
+    border: 2px solid #dc2626;
+    border-radius: 8px;
+    background-color: #fee2e2;
+    color: #991b1b;
+    font-size: min(1cqw, 2cqh);
+    font-weight: bold;
+    text-align: center;
+}
