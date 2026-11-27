@@ -23,7 +23,7 @@
   --text: #f1f5f9;
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
   grid-template-rows: auto 1fr;
   grid-template-areas:
     "icon city"
@@ -48,16 +48,23 @@
   gap: 8px;
 }
 
-
-// Hohe Kachel: Ortsname, Icon und Daten untereinander
 @container (max-aspect-ratio: 1/1) {
   .weathercomponent {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "city" "icon" "data";
+  }
+}
+
+@container (max-aspect-ratio: 1/1) {
+  .weathercomponent.detail {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) minmax(0, 2fr) minmax(0, 1.3fr);
     grid-template-areas:
       "city"
       "icon"
-      "data";
+      "data"
+      "diagram";
   }
 }
 
@@ -65,7 +72,7 @@
 .city {
   grid-area: city;
   color: #fff;
-  font-size: clamp(0.9rem, 2.5cqw, 4rem);
+  font-size: min(5.5cqw, 9.5cqh);
 
   p {
     margin: 0;
@@ -105,7 +112,7 @@
 
 .text{
   margin: 0;
-  font-size: min(5cqw, 9cqh);
+  font-size: min(5.5cqw, 9.5cqh);
 }
 
 .currentTemperature,

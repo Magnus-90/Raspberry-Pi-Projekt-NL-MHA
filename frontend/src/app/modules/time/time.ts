@@ -7,10 +7,10 @@ import { booleanAttribute, Component, input, OnDestroy, signal } from '@angular/
   styleUrl: './time.scss',
 })
 export class TimeConponent implements OnDestroy {
-  time = signal(new Date().toLocaleTimeString());
+  time = signal(new Date().toLocaleTimeString('de-CH'));
   private id = setInterval(() => {
     const now = new Date();
-    this.time.set(now.toLocaleTimeString());
+    this.time.set(now.toLocaleTimeString('de-CH'));
     this.dayProgress.set(this.getDayProgress(now));
     this.calendarWeek.set(this.getCalendarWeek(now));
     const sw = this.nextTimeSwitchDate();
